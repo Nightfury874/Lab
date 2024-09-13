@@ -68,7 +68,6 @@ p {
 }
 
 .sim-info {
-
     height: 200px;
     width: 200px;
     display: flex;
@@ -76,7 +75,8 @@ p {
     align-items: center;
     justify-content: space-around;
     text-align: left;
-  }
+}
+
 .sim-title {
     font-size: 1.2em;
     font-weight: 600;
@@ -87,9 +87,8 @@ p {
 .sim-status {
     font-size: 0.8em; /* Smaller text for status */
     color: #cfcfcf; /* Lighter gray text */
-    margin-top: auto;
+    margin-top: auto;
 }
-
 
 .sim-box img.sim-image {
     height: 100%; /* Make icon as tall as the box */
@@ -110,6 +109,37 @@ p {
 
 .more-link:hover {
     text-decoration: underline;
+}
+
+/* Footer styling */
+.footer {
+    margin-top: 50px;
+    padding: 20px 0;
+    background-color: #1C1D21; /* Dark contrasting background */
+    color: #fff; /* White text for contrast */
+    text-align: center;
+}
+
+.footer p {
+    margin: 0 0 10px;
+    font-size: 1.2em;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.social-icon {
+    width: 30px;
+    height: 30px;
+    fill: #ffffff; /* Ensure SVG icons are white for contrast */
+    transition: transform 0.3s ease;
+}
+
+.social-icon:hover {
+    transform: scale(1.1); /* Slight zoom on hover */
 }
 
 /* Background Animation */
