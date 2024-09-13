@@ -97,6 +97,30 @@
             font-weight: bold;
             margin-top: 20px;
         }
+
+        /* Styles for the analytics section */
+        #analytics {
+    margin-top: 30px;
+    width: 100%;
+    }
+    #analytics h2 {
+    text-align: center;
+    color: #333;
+    }
+    .analytics-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+    .analytics-table th, .analytics-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+}
+    .analytics-table th {
+    background-color: #f9f9f9;
+}
+
     </style>
 </head>
 <body>
@@ -135,6 +159,8 @@
             <button id="startBtn">Start</button>
             <button id="pauseBtn">Pause</button>
             <button id="resetBtn">Reset</button>
+            <button id="resetAnalyticsBtn">Reset Analytics</button>
+
         </div>
         <div id="stats">
             <!-- Entity counts and probabilities will be displayed here -->
@@ -143,6 +169,41 @@
             <!-- Winner will be displayed here -->
         </div>
     </div>
+    <canvas id="outcomeChart" width="800" height="200"></canvas>
+
+    <!-- Add this below the existing controls -->
+<div id="analytics">
+    <h2>Analytics</h2>
+    <div id="totalWinsLossesDraws">
+        <!-- Total wins, losses, and draws will be displayed here -->
+    </div>
+    <div id="survivalTimes">
+        <h3>Survival Times</h3>
+        <div id="averageSurvivalTimes">
+            <!-- Average survival times will be displayed here -->
+        </div>
+        <div id="longestSurvivor">
+            <!-- Longest surviving entity will be displayed here -->
+        </div>
+        <div id="outcomeDistribution">
+            <h3>Outcome Distribution Over Time</h3>
+            <div id="outcomeChartContainer">
+                <!-- The outcomeChart canvas is already added above -->
+            </div>
+            <div id="outcomeRatios">
+                <!-- Outcome ratios will be displayed here -->
+            </div>
+        </div>
+
+        <div id="totalInteractions">
+            <!-- Total interactions will be displayed here -->
+        </div>
+        
+    </div>
+    
+    <!-- Other analytics sections will be added here -->
+</div>
+
 </div>
 
 <script src="simulation.js"></script>
