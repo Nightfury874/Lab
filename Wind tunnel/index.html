@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Euler Fluid Simulation with Custom Shapes</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <button class="button" onclick="setupScene(1)">Wind Tunnel</button>
+    <button class="button" onclick="setupScene(3)">Hires Tunnel</button>
+    <button class="button" onclick="setupScene(0)">Tank</button>
+    <button class="button" onclick="setupScene(2)">Paint</button>
+    <input type="checkbox" id="streamButton" onclick="scene.showStreamlines = !scene.showStreamlines">Streamlines
+    <input type="checkbox" id="velocityButton" onclick="scene.showVelocities = !scene.showVelocities">Velocities
+    <input type="checkbox" name="field" id="pressureButton" onclick="scene.showPressure = !scene.showPressure;"> Pressure
+    <input type="checkbox" name="field" id="smokeButton" onclick="scene.showSmoke = !scene.showSmoke;" checked>Smoke
+    <input type="checkbox" id="overrelaxButton" onclick="scene.overRelaxation = scene.overRelaxation == 1.0 ? 1.9 : 1.0" checked>Overrelax
+    <br>
+    Obstacle Shape:
+    <input type="radio" name="obstacleShape" value="circle" checked> Circle
+    <input type="radio" name="obstacleShape" value="square"> Square
+    <input type="radio" name="obstacleShape" value="custom"> Custom (Upload SVG)
+    <br>
+    <input type="file" id="svgUpload" accept=".svg" style="display:none;">
+    <label for="svgUpload" class="button" id="uploadButton" style="display:none;">Upload SVG</label>
+    <canvas id="myCanvas" style="border:2px solid"></canvas>
+    <!-- Hidden canvas for rendering SVG -->
+    <canvas id="svgCanvas" style="display:none;"></canvas>
+    <script src="script.js"></script>
+</body>
+</html>
