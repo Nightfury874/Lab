@@ -127,9 +127,17 @@ function resolveInteraction(e1, e2) {
         e1.updateType(e2.type); // e2 wins, e1 changes type
     }
 }
+document.getElementById('landingPage').style.opacity = '0';
+setTimeout(() => {
+    document.getElementById('landingPage').style.display = 'none';
+    document.getElementById('simulationContainer').style.display = 'flex';
+    document.getElementById('simulationContainer').style.opacity = '1';
+}, 500);
+
 
 function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Draw a subtle grid background on the canvas
+    drawBackground();
 
     entities.forEach(entity => {
         entity.updatePosition();
@@ -147,6 +155,31 @@ function animate() {
         animationId = requestAnimationFrame(animate);
     }
 }
+function drawBackground() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Optional: draw a grid
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.strokeStyle = '#e0e0e0';
+    ctx.lineWidth = 1;
+
+    const gridSize = 50;
+    for (let x = gridSize; x < canvas.width; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+    }
+    for (let y = gridSize; y < canvas.height; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+    }
+}
+
 
 function updateStats() {
     let counts = { 'rock': 0, 'paper': 0, 'scissors': 0 };

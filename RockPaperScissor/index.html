@@ -5,62 +5,143 @@
     <meta charset="UTF-8">
     <title>Rock-Paper-Scissors Simulation</title>
     <style>
-        /* Basic styles for the canvas and controls */
-        canvas {
-            border: 1px solid #000;
+        /* Styles for the landing page and simulation */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+        }
+        #landingPage, #simulationContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        #landingPage {
+            background: linear-gradient(135deg, #ece9e6, #ffffff);
+            text-align: center;
+        }
+        #landingPage h1 {
+            font-size: 3em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        #landingPage p {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 40px;
+        }
+        #enterBtn {
+            padding: 15px 30px;
+            font-size: 1em;
+            background-color: #008CBA;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #enterBtn:hover {
+            background-color: #005f7f;
+        }
+        #simulationContainer {
+            background-color: #f9f9f9;
+}
+        #simulationCanvas {
+            border: 1px solid #ccc;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         #controls {
-            margin-top: 10px;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        #entityInputs, #durationInput {
-            margin-bottom: 10px;
+        #entityInputs, #durationInput, #stats, #winner {
+            margin-bottom: 15px;
+            text-align: center;
         }
         label {
             margin-right: 10px;
+            font-weight: bold;
+            color: #333;
         }
         input[type="number"] {
             width: 60px;
             margin-right: 20px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 1em;
+            background-color: #008CBA;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #005f7f;
+        }
+        #stats, #winner {
+            font-size: 1.1em;
+            color: #333;
         }
         #winner {
-            margin-top: 10px;
             font-weight: bold;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
-<canvas id="simulationCanvas" width="800" height="600"></canvas>
+<div id="landingPage">
+    <h1>Welcome to the Rock-Paper-Scissors Simulation</h1>
+    <p>Experience the classic game in a dynamic and interactive way.</p>
+    <button id="enterBtn">Enter Simulation</button>
+</div>
 
-<div id="controls">
-    <div id="entityInputs">
-        <label>
-            Rocks:
-            <input type="number" id="rockCount" value="33" min="0">
-        </label>
-        <label>
-            Papers:
-            <input type="number" id="paperCount" value="33" min="0">
-        </label>
-        <label>
-            Scissors:
-            <input type="number" id="scissorsCount" value="34" min="0">
-        </label>
-    </div>
-    <div id="durationInput">
-        <label>
-            Match Duration (seconds):
-            <input type="number" id="matchDuration" value="10" min="1">
-        </label>
-    </div>
-    <button id="startBtn">Start</button>
-    <button id="pauseBtn">Pause</button>
-    <button id="resetBtn">Reset</button>
-    <div id="stats">
-        <!-- This is where we'll display the entity counts and probabilities -->
-    </div>
-    <div id="winner">
-        <!-- Winner will be displayed here -->
+<div id="simulationContainer">
+    <canvas id="simulationCanvas" width="800" height="600"></canvas>
+
+    <div id="controls">
+        <div id="entityInputs">
+            <label>
+                Rocks:
+                <input type="number" id="rockCount" value="33" min="0">
+            </label>
+            <label>
+                Papers:
+                <input type="number" id="paperCount" value="33" min="0">
+            </label>
+            <label>
+                Scissors:
+                <input type="number" id="scissorsCount" value="34" min="0">
+            </label>
+        </div>
+        <div id="durationInput">
+            <label>
+                Match Duration (seconds):
+                <input type="number" id="matchDuration" value="10" min="1">
+            </label>
+        </div>
+        <div>
+            <button id="startBtn">Start</button>
+            <button id="pauseBtn">Pause</button>
+            <button id="resetBtn">Reset</button>
+        </div>
+        <div id="stats">
+            <!-- Entity counts and probabilities will be displayed here -->
+        </div>
+        <div id="winner">
+            <!-- Winner will be displayed here -->
+        </div>
     </div>
 </div>
 
