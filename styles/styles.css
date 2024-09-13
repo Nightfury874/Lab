@@ -68,27 +68,28 @@ p {
 }
 
 .sim-info {
+
+    height: 200px;
+    width: 200px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    align-items: center;
+    justify-content: space-around;
     text-align: left;
-    height: 100%;
-}
-
+  }
 .sim-title {
     font-size: 1.2em;
     font-weight: 600;
     color: #ffffff; /* Make text white */
     line-height: 1.2em;
-    align-self: flex-start; /* Align the title with the top */
 }
 
 .sim-status {
     font-size: 0.8em; /* Smaller text for status */
     color: #cfcfcf; /* Lighter gray text */
-    align-self: flex-end; /* Align the status with the bottom */
-    margin-top: auto;
+    margin-top: auto;
 }
+
 
 .sim-box img.sim-image {
     height: 100%; /* Make icon as tall as the box */
