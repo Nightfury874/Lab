@@ -6,26 +6,62 @@
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
+    <!-- Buttons -->
     <button class="button" onclick="setupScene(1)">Wind Tunnel</button>
     <button class="button" onclick="setupScene(3)">Hires Tunnel</button>
     <button class="button" onclick="setupScene(0)">Tank</button>
     <button class="button" onclick="setupScene(2)">Paint</button>
-    <input type="checkbox" id="streamButton" onclick="scene.showStreamlines = !scene.showStreamlines">Streamlines
-    <input type="checkbox" id="velocityButton" onclick="scene.showVelocities = !scene.showVelocities">Velocities
-    <input type="checkbox" name="field" id="pressureButton" onclick="scene.showPressure = !scene.showPressure;"> Pressure
-    <input type="checkbox" name="field" id="smokeButton" onclick="scene.showSmoke = !scene.showSmoke;" checked>Smoke
-    <input type="checkbox" id="overrelaxButton" onclick="scene.overRelaxation = scene.overRelaxation == 1.0 ? 1.9 : 1.0" checked>Overrelax
-    <br>
-    Obstacle Shape:
-    <input type="radio" name="obstacleShape" value="circle" checked> Circle
-    <input type="radio" name="obstacleShape" value="square"> Square
-    <input type="radio" name="obstacleShape" value="custom"> Custom (Upload SVG)
-    <br>
+
+    <!-- Switches for Streamlines, Velocities, etc. -->
+    <label class="switch">
+        <input type="checkbox" id="streamButton" onclick="scene.showStreamlines = !scene.showStreamlines">
+        <span class="toggle-slider"></span>
+    </label>
+    <label for="streamButton">Streamlines</label>
+
+    <label class="switch">
+        <input type="checkbox" id="velocityButton" onclick="scene.showVelocities = !scene.showVelocities">
+        <span class="toggle-slider"></span>
+    </label>
+    <label for="velocityButton">Velocities</label>
+
+    <label class="switch">
+        <input type="checkbox" id="pressureButton" onclick="scene.showPressure = !scene.showPressure;">
+        <span class="toggle-slider"></span>
+    </label>
+    <label for="pressureButton">Pressure</label>
+
+    <label class="switch">
+        <input type="checkbox" id="smokeButton" onclick="scene.showSmoke = !scene.showSmoke;" checked>
+        <span class="toggle-slider"></span>
+    </label>
+    <label for="smokeButton">Smoke</label>
+
+    <label class="switch">
+        <input type="checkbox" id="overrelaxButton" onclick="scene.overRelaxation = scene.overRelaxation == 1.0 ? 1.9 : 1.0" checked>
+        <span class="toggle-slider"></span>
+    </label>
+    <label for="overrelaxButton">Overrelaxation</label>
+
+    <!-- Updated Obstacle Shape options -->
+    <div class="radio-group">
+        <input type="radio" id="circle" name="obstacleShape" value="circle" checked>
+        <label for="circle">Circle</label>
+
+        <input type="radio" id="square" name="obstacleShape" value="square">
+        <label for="square">Square</label>
+
+        <input type="radio" id="custom" name="obstacleShape" value="custom">
+        <label for="custom">Custom (Upload SVG)</label>
+    </div>
     <input type="file" id="svgUpload" accept=".svg" style="display:none;">
     <label for="svgUpload" class="button" id="uploadButton" style="display:none;">Upload SVG</label>
+
+    <!-- Canvases -->
     <canvas id="myCanvas" style="border:2px solid"></canvas>
-    <!-- Hidden canvas for rendering SVG -->
     <canvas id="svgCanvas" style="display:none;"></canvas>
+
+    <!-- Script -->
     <script src="script.js"></script>
 </body>
 </html>

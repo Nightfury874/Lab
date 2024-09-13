@@ -68,7 +68,7 @@ p {
 }
 
 .sim-info {
-    height: 200px;
+    height: 170px;
     width: 200px;
     display: flex;
     flex-direction: column;
@@ -78,8 +78,8 @@ p {
 }
 
 .sim-title {
-    font-size: 1.2em;
-    font-weight: 600;
+    font-size: 1em;
+    font-weight: 300;
     color: #ffffff; /* Make text white */
     line-height: 1.2em;
 }
