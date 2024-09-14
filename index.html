@@ -12,6 +12,28 @@
 </head>
 <body>
 
+    <!-- Dark Mode Toggle Switch -->
+    <div class="toggle-container">
+        <label class="switch">
+            <input type="checkbox" id="mode-toggle">
+            <span class="slider round"></span>
+        </label>
+        <span class="mode-label">Dark Mode</span>
+    </div>
+
+    <!-- "Out of Order" SVG Below the Toggle -->
+    <div class="out-of-order-container">
+        <!-- <img src="image/SVGLight.svg" alt="Light" class="out-of-order out-of-order-light"> -->
+        <img src="image/SVGDark2.svg" alt="dark" class="out-of-order out-of-order-dark hidden">
+    </div>
+
+    <!-- Torchlight Effect Elements (Initially Hidden) -->
+    <div id="darkness" class="darkness hidden">
+        <div id="light" class="light">
+            <span class="shadow"></span>
+        </div>
+    </div>
+
     <div class="background-animation">
         <div class="floating-binary">01001010</div>
         <div class="floating-binary">10101100</div>
@@ -80,6 +102,58 @@
             </a>
         </div>
     </footer>
+
+    <!-- JavaScript for Dark Mode and Torchlight Effect -->
+    <script>
+        // Dark Mode Toggle
+        const toggleSwitch = document.getElementById('mode-toggle');
+        const darkness = document.getElementById('darkness');
+        const light = document.getElementById('light');
+
+        // const outOfOrderLight = document.querySelector('.out-of-order-light');
+        const outOfOrderDark = document.querySelector('.out-of-order-dark');
+
+        toggleSwitch.addEventListener('change', function() {
+            if (this.checked) {
+                document.body.classList.add('dark-mode');
+                darkness.classList.remove('hidden');
+                // outOfOrderLight.classList.add('hidden');
+                outOfOrderDark.classList.remove('hidden');
+            } else {
+                document.body.classList.remove('dark-mode');
+                darkness.classList.add('hidden');
+                // outOfOrderLight.classList.remove('hidden');
+                outOfOrderDark.classList.add('hidden');
+            }
+        });
+
+        // Torchlight Effect
+        function updateTorch(e) {
+            let x, y;
+            if (e.type === 'touchmove') {
+                x = e.touches[0].clientX - 150;
+                y = e.touches[0].clientY - 150;
+            } else {
+                x = e.clientX - 150;
+                y = e.clientY - 150;
+            }
+
+            light.style.left = x + "px";
+            light.style.top = y + "px";
+        }
+
+        document.addEventListener('mousemove', function(e) {
+            if (document.body.classList.contains('dark-mode')) {
+                updateTorch(e);
+            }
+        });
+
+        document.addEventListener('touchmove', function(e) {
+            if (document.body.classList.contains('dark-mode')) {
+                updateTorch(e);
+            }
+        });
+    </script>
 
 </body>
 </html>
