@@ -377,12 +377,12 @@ input:checked + .slider:before {
 
 /* Sway Animation on Hover */
 .out-of-order:hover {
-    animation: sway 1s infinite;
+    animation: sway 1s 1;
 }
 
 @keyframes sway {
-    0% { transform: rotate(0deg); }
-    25% { transform: rotate(5deg); }
+    0% { transform: rotate(3deg); }
+    25% { transform: rotate(7deg); }
     50% { transform: rotate(0deg); }
     75% { transform: rotate(-5deg); }
     100% { transform: rotate(0deg); }
