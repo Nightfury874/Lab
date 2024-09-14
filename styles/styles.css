@@ -5,7 +5,7 @@ body {
     background-color: #272831; /* Background color updated */
     margin: 0;
     padding: 0;
-    overflow: hidden; /* Prevents scrollbars from showing with animation */
+
 }
 
 h1 {
