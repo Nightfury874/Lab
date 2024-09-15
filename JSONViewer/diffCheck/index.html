@@ -49,6 +49,12 @@
             <span class="mode-label">Dark Mode</span>
         </div>
     </div>
+    
+    <div class="out-of-order-container"></div>
+        <!-- Uncomment if you want to use the light mode SVG -->
+        <!-- <img src="image/SVGLight.svg" alt="Light" class="out-of-order out-of-order-light"> -->
+        <img src="image/SVGDark2.svg" alt="Dark" class="out-of-order out-of-order-dark hidden">
+    </div>
 
     <!-- "Out of Order" SVG Below the Toggle -->
     
@@ -150,12 +156,10 @@
                 document.body.classList.add('dark-mode');
                 darkness.classList.remove('hidden');
                 outOfOrderDark.classList.remove('hidden');
-                setTimeout(() => {
-                    outOfOrderDark.classList.add('hidden');
-                }, 4000);
             } else {
                 document.body.classList.remove('dark-mode');
                 darkness.classList.add('hidden');
+                outOfOrderDark.classList.add('hidden')
             }
         });
 

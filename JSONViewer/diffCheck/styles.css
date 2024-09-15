@@ -70,6 +70,8 @@ body.dark-mode .sub-header {
 
 /* Toggle Switch Styling */
 .toggle-container {
+    top: 20px;
+    right: 20px;
     display: flex;
     align-items: center;
 }
@@ -122,6 +124,9 @@ input:checked + .slider:before {
 
 /* Mode label */
 .mode-label {
+    margin-left: 10px;
+    font-weight: 600;
+    
     font-size: 1em;
 }
 
@@ -155,31 +160,29 @@ input:checked + .slider:before {
     box-shadow: inset 4px 0 37px 53px rgba(0,0,0,0.9);
 }
 
-/* Hide elements with hidden class */
-.hidden {
-    display: none;
-}
+
 
 /* "Out of Order" SVG Styles */
 .out-of-order-container {
     position: fixed;
-    top: 70px; /* Adjust based on toggle switch position */
-    right: 20px; /* Align with toggle switch */
-    z-index: 1;
-    pointer-events: auto; /* Ensure interactivity */
+    height: 120px;
+    width: auto;
+    right: 120px; /* Align with toggle switch */
+    z-index: 2;
+    pointer-events: auto;
 }
 
 .out-of-order {
-    width: 300px; /* Adjust size as needed */
-    height: 300px;
+    width: 300px; /* Adjusted size for better responsiveness */
+    height: auto;
     cursor: pointer;
     transition: transform 0.5s ease-in-out;
 }
 
-/* Initially hide the dark mode SVG */
 .out-of-order-dark.hidden {
     display: none;
 }
+
 
 /* Sway Animation on Hover */
 .out-of-order:hover {
@@ -205,6 +208,10 @@ input:checked + .slider:before {
         width: 40px;
         height: 40px;
     }
+}
+/* Hide elements with hidden class */
+.hidden {
+    display: none;
 }
 
 
@@ -456,7 +463,6 @@ body.dark-mode .diff-container {
     gap: 10px;
     margin-top: 20px;
 }
-
 
 /* Expandable Text Box Styling */
 .text-box.expanded {
