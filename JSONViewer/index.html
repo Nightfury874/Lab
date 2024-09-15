@@ -1,10 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>JSON Viewer & Editor</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <title>JSON Viewer & Editor</title>
+        <link rel="stylesheet" href="styles.css">
+    
+        <!-- CodeMirror CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    
+        <!-- Optional: CodeMirror Theme (e.g., Material) -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material.min.css">
+    
+        <!-- CodeMirror JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    
+        <!-- CodeMirror JSON Mode -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    
+        <!-- diff_match_patch Library -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js"></script>
+    
+        <!-- CodeMirror Merge Addon CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/merge/merge.min.css">
+    
+        <!-- CodeMirror Merge Addon JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/merge/merge.min.js"></script>
+    </head>
+    
 <body>
     <!-- Header Section -->
     <div class="header">
@@ -57,17 +79,21 @@
                                 <option value="text">Text</option>
                                 <option value="tree">Tree</option>
                                 <option value="table">Table</option>
+                                <option value ="compact">Compact</option>
                             </select>
                         </div>
                         <button class="expand-btn" onclick="toggleExpand('jsonBox1')">
                             <img src="icons/expand-icon.svg" alt="Expand Icon" />
                         </button>
+                        <button class="copy-btn" onclick="copyJSON('jsonInput1')">
+                            <img src="icons/copy-icon.svg" alt="Copy JSON" />
+                        </button>
                     </div>
                 </div>
-                <textarea id="jsonInput1" placeholder="Enter JSON here..."></textarea>
-                <div id="view1" class="view-area"></div>
+                <textarea id="jsonInput1" class="json-textarea" placeholder="Enter JSON here..."></textarea>
                 <!-- Compare Viewer -->
-                <div id="compareView1" class="compare-view"></div>
+                <div id="view1" class="view-area"></div>
+                <!-- Add a unique class for CodeMirror initialization -->
             </div>
 
             <!-- Compare Button -->
@@ -91,18 +117,28 @@
                                 <option value="text">Text</option>
                                 <option value="tree">Tree</option>
                                 <option value="table">Table</option>
+                                <option value ="compact">Compact</option>
                             </select>
                         </div>
                         <button class="expand-btn" onclick="toggleExpand('jsonBox2')">
                             <img src="icons/expand-icon.svg" alt="Expand Icon" />
                         </button>
+                        <button class="copy-btn" onclick="copyJSON('jsonInput2')">
+                            <img src="icons/copy-icon.svg" alt="Copy JSON" />
+                        </button>
                     </div>
                 </div>
-                <textarea id="jsonInput2" placeholder="Enter JSON here..."></textarea>
+                <textarea id="jsonInput2" class="json-textarea" placeholder="Enter JSON here..."></textarea>
                 <div id="view2" class="view-area"></div>
                 <!-- Compare Viewer -->
                 <div id="compareView2" class="compare-view"></div>
             </div>
+        </div>
+
+        <!-- Compare Viewer Container -->
+        <div id="diffContainer" class="diff-container hidden">
+            <h2>JSON Comparison</h2>
+            <div id="diffView"></div>
         </div>
     </div>
 
