@@ -1,5 +1,4 @@
-/* JSONViewer/styles.css */
-
+/* General Styles */
 body {
     font-family: Arial, sans-serif;
     background-color: #f5f5f5;
@@ -10,42 +9,209 @@ body {
 .container {
     max-width: 1400px;
     margin: 0 auto;
+    z-index: 1;
+
 }
 
 h1 {
     text-align: center;
-    color: #333;
+    color: #3a3a3a;
     margin-bottom: 40px;
+    z-index: 1; /* Increased z-index for visibility */
+    position: relative;
 }
 
-
-
-
+/* Icon Styles */
 .icon-code{
-    width: 800px;
+    width: 100px; /* Corrected from 800px to 100px for better visibility */
     height: auto;
     cursor: pointer;
     transition: opacity 0.3s ease;
-
 }
 
+/* Dark Mode Styles */
+body.dark-mode {
+ /* Changed to a darker color for dark mode */
+    color: #f0f0f0;
+}
 
+body.dark-mode .sim-box {
+    background-color: #2c2c2c;
+}
 
+body.dark-mode .sim-status {
+    color: #ccc;
+}
 
+/* Toggle Switch Styles */
+.toggle-container {
+/* Changed to fixed to keep it in view */
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    z-index: 3; /* Increased z-index to stay above other elements */
+}
+
+.mode-label {
+    margin-left: 10px;
+    font-weight: 600;
+    color: #000;
+    transition: color 0.3s;
+}
+
+body.dark-mode .mode-label {
+    color: #fff;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Torchlight Effect Styles */
+.darkness {
+    position: fixed; /* Changed to fixed to cover the entire viewport */
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    pointer-events: none; /* Prevent blocking interactions */
+    z-index: 2;
+}
+
+.light {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    -webkit-box-shadow: 400vh 0px 0px 400vw rgba(0,0,0,0.99);
+    -moz-box-shadow: 400vh 0px 0px 400vw rgba(0,0,0,0.99);
+    box-shadow: 0 0 0 400vh rgba(0,0,0,0.95);
+    pointer-events: none; /* Ensure it doesn't block interactions */
+}
+
+.shadow {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    -webkit-box-shadow: inset 4px 0 37px 53px rgba(0,0,0,0.9);
+    -moz-box-shadow: inset 4px 0 37px 53px rgba(0,0,0,0.9);
+    box-shadow: inset 4px 0 37px 53px rgba(0,0,0,0.9);
+}
+
+/* Out-of-Order Container */
+.out-of-order-container {
+    position: fixed;
+    height: 120px;
+    width: auto;
+
+    right: 120px; /* Align with toggle switch */
+    z-index: 2;
+
+    pointer-events: auto; /* Ensure interactivity */
+}
+
+.out-of-order {
+    width: 300px; /* Adjusted size for better responsiveness */
+    height: auto;
+    cursor: pointer;
+    transition: transform 0.5s ease-in-out;
+}
+
+/* Initially hide the dark mode SVG */
+.out-of-order-dark.hidden {
+    display: none;
+}
+
+/* Sway Animation on Hover */
+.out-of-order:hover {
+    animation: sway 1s 1;
+}
+
+@keyframes sway {
+    0% { transform: rotate(3deg); }
+    25% { transform: rotate(7deg); }
+    50% { transform: rotate(0deg); }
+    75% { transform: rotate(-5deg); }
+    100% { transform: rotate(0deg); }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+    .out-of-order-container {
+        top: 80px;
+        right: 10px;
+    }
+
+    .out-of-order {
+        width: 40px;
+        height: auto;
+    }
+}
+
+.hidden {
+    display: none;
+}
+
+/* Sub-header Styles */
 .sub-header {
     display: flex;
-    justify-content: right;
-    align-items: right;
-
+    justify-content: space-between;
+    align-items: center;
 }
+
 .header h1 {
     color: #333;
-
     font-size: 2em;
+    z-index: 1;
 }
 
+/* Top-right Link Styles */
 .top-right-link img {
-    width: 100px;
+    width: 100px; /* Adjusted for consistency */
     height: auto;
     cursor: pointer;
     transition: opacity 0.3s ease;
@@ -55,15 +221,15 @@ h1 {
     opacity: 0.8;
 }
 
-
+/* JSON Container Styles */
 .json-container {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: nowrap; /* Changed to wrap for responsiveness */
     gap: 20px;
     justify-content: space-between;
     align-items: flex-start;
+    z-index: 1;
 }
-
 
 /* JSON Box Styles */
 .json-box {
@@ -75,6 +241,7 @@ h1 {
     display: flex;
     flex-direction: column;
     transition: all 0.3s ease;
+    z-index: 1;
 }
 
 .json-header {
@@ -86,12 +253,14 @@ h1 {
     background-color: #f9f9f9;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
+    z-index: 1;
 }
 
 .json-header h2 {
     margin: 0;
     font-size: 1.2em;
     color: #555;
+    z-index: 1;
 }
 
 .controls {
@@ -224,6 +393,7 @@ textarea:focus {
     display: flex;
     align-items: center;
     justify-content: center;
+    margin: 20px 0;
 }
 
 .compare-btn {
