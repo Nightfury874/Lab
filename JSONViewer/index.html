@@ -1,0 +1,82 @@
+<!-- JSONViewer/Index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JSON Viewer & Editor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>JSON Viewer & Editor</h1>
+        <div class="json-container">
+            <!-- JSON Input 1 -->
+            <div class="json-box" id="jsonBox1">
+                <div class="json-header">
+                    <h2>JSON Input 1</h2>
+                    <div class="controls">
+                        <button class="beautify-btn" onclick="beautifyJSON('jsonInput1')">
+                            <img src="icons/beautify-icon.svg" alt="Beautify Icon" />
+                        </button>
+                        <div class="view-select">
+                            <img src="icons/view-icon.svg" alt="View Icon" />
+                            <select onchange="viewJSON('jsonInput1', this.value)">
+                                <option value="text">Text</option>
+                                <option value="tree">Tree</option>
+                                <option value="table">Table</option>
+                            </select>
+                        </div>
+                        <button class="expand-btn" onclick="toggleExpand('jsonBox1')">
+                            <img src="icons/expand-icon.svg" alt="Expand Icon" />
+                        </button>
+                    </div>
+                </div>
+                <textarea id="jsonInput1" placeholder="Enter JSON here..."></textarea>
+                <div id="view1" class="view-area"></div>
+                <!-- Compare Viewer -->
+                <div id="compareView1" class="compare-view"></div>
+            </div>
+
+            <!-- Compare Button -->
+            <div class="compare-container">
+                <button class="compare-btn" onclick="compareJSON()">
+                    <img src="icons/compare-icon.svg" alt="Compare Icon" />
+                </button>
+            </div>
+
+            <!-- JSON Input 2 -->
+            <div class="json-box" id="jsonBox2">
+                <div class="json-header">
+                    <h2>JSON Input 2</h2>
+                    <div class="controls">
+                        <button class="beautify-btn" onclick="beautifyJSON('jsonInput2')">
+                            <img src="icons/beautify-icon.svg" alt="Beautify Icon" />
+                        </button>
+                        <div class="view-select">
+                            <img src="icons/view-icon.svg" alt="View Icon" />
+                            <select onchange="viewJSON('jsonInput2', this.value)">
+                                <option value="text">Text</option>
+                                <option value="tree">Tree</option>
+                                <option value="table">Table</option>
+                            </select>
+                        </div>
+                        <button class="expand-btn" onclick="toggleExpand('jsonBox2')">
+                            <img src="icons/expand-icon.svg" alt="Expand Icon" />
+                        </button>
+                    </div>
+                </div>
+                <textarea id="jsonInput2" placeholder="Enter JSON here..."></textarea>
+                <div id="view2" class="view-area"></div>
+                <!-- Compare Viewer -->
+                <div id="compareView2" class="compare-view"></div>
+            </div>
+        </div>
+
+        <!-- Compare Viewers are displayed below the JSON boxes -->
+        <!-- They are already included within each json-box above -->
+
+    </div>
+
+    <script src="engine.js"></script>
+</body>
+</html>
