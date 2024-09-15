@@ -1,127 +1,330 @@
-/* JSONViewer/diffCheck/styles.css */
+/* styles.css */
 
-/* Reset and Base Styles */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
+/* Reset some basic styles */
+body, html, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
     margin: 0;
-    padding: 20px;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
 }
 
+/* Box sizing */
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+/* Body styling */
+body {
+    line-height: 1;
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    color: #1B2B34;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark mode styles */
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+/* Header styling */
+.header {
+    background-color: #4CAF50;
+    padding: 20px;
+    text-align: center;
+}
+
+.header h1 {
+    color: white;
+    font-size: 2em;
+}
+
+/* Sub-header styling */
+.sub-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f1f1f1;
+    transition: background-color 0.3s ease;
+}
+
+body.dark-mode .sub-header {
+    background-color: #1f1f1f;
+}
+
+/* Toggle Switch Styling */
+.toggle-container {
+    display: flex;
+    align-items: center;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    margin-right: 10px;
+}
+
+.switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #4CAF50;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Mode label */
+.mode-label {
+    font-size: 1em;
+}
+
+/* Torchlight effect styling */
+.darkness {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+.light {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    border-radius: 100%;
+    -webkit-box-shadow: 400vh 0px 0px 400vw rgba(0,0,0,0.99);
+    -moz-box-shadow: 400vh 0px 0px 400vw rgba(0,0,0,0.99);
+    box-shadow: 400vh 0px 0px 400vw rgba(0,0,0,0.95);
+}
+
+.shadow {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+    -webkit-box-shadow: inset 4px 0 37px 53px rgba(0,0,0,0.9);
+    -moz-box-shadow: inset 4px 0 37px 53px rgba(0,0,0,0.9);
+    box-shadow: inset 4px 0 37px 53px rgba(0,0,0,0.9);
+}
+
+/* Hide elements with hidden class */
+.hidden {
+    display: none;
+}
+
+/* "Out of Order" SVG Styles */
+.out-of-order-container {
+    position: fixed;
+    top: 70px; /* Adjust based on toggle switch position */
+    right: 20px; /* Align with toggle switch */
+    z-index: 1;
+    pointer-events: auto; /* Ensure interactivity */
+}
+
+.out-of-order {
+    width: 300px; /* Adjust size as needed */
+    height: 300px;
+    cursor: pointer;
+    transition: transform 0.5s ease-in-out;
+}
+
+/* Initially hide the dark mode SVG */
+.out-of-order-dark.hidden {
+    display: none;
+}
+
+/* Sway Animation on Hover */
+.out-of-order:hover {
+    animation: sway 1s 1;
+}
+
+@keyframes sway {
+    0% { transform: rotate(3deg); }
+    25% { transform: rotate(7deg); }
+    50% { transform: rotate(0deg); }
+    75% { transform: rotate(-5deg); }
+    100% { transform: rotate(0deg); }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+    .out-of-order-container {
+        top: 80px;
+        right: 10px;
+    }
+
+    .out-of-order {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+
+/* Main Content Container */
 .container {
-    max-width: 1400px;
+    padding: 20px;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
-h1 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 40px;
-}
-
+/* Text Container */
 .text-container {
     display: flex;
-    flex-wrap: nowrap;
-    gap: 20px;
     justify-content: space-between;
     align-items: flex-start;
+    gap: 20px;
+    flex-wrap: nowrap;
 }
 
-/* Text Box Styles */
+/* Text Box Styling */
 .text-box {
-    background-color: #fff;
+    flex: 1 1 45%;
+    background-color: #ffffff;
     border: 1px solid #ddd;
     border-radius: 8px;
-    width: 48%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    transition: all 0.3s ease;
+    padding: 15px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
+body.dark-mode .text-box {
+    background-color: #1e1e1e;
+
+    border-style: solid;
+    border-radius: 15px;
+    border-image: linear-gradient(90deg, 
+    
+    rgba(0, 242, 12, 0.8),   /* Semi-transparent green */
+    rgba(0, 255, 255, 0.8),  /* Semi-transparent cyan */
+    rgba(0, 0, 255, 0.8),    /* Semi-transparent blue */
+    rgba(255, 0, 255, 0.8),  /* Semi-transparent magenta */
+    rgba(255, 0, 0, 0.8),    /* Semi-transparent red */
+    rgba(255, 255, 0, 0.8)   /* Semi-transparent yellow */
+    ) 1;
+    
+}
+
+/* Text Header */
 .text-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px;
-    border-bottom: 1px solid #ddd;
-    background-color: #f9f9f9;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+    margin-bottom: 10px;
 }
 
-.text-header h2 {
-    margin: 0;
-    font-size: 1.2em;
-    color: #555;
-}
-
-.text-header .line-count {
-    font-size: 0.9em;
-    color: #666;
-}
-
-/* Textarea with Line Numbers */
-.textarea-container {
+/* Control Buttons */
+.controls {
     display: flex;
-    position: relative;
-    height: 400px;
+    gap: 10px;
 }
 
-.line-numbers {
-    padding: 15px 10px;
-    background-color: #f0f0f0;
-    text-align: right;
-    user-select: none;
-    border-right: 1px solid #ddd;
-    font-size: 1em;
-    color: #999;
-    overflow: hidden;
-    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end; /* Align numbers to the right */
-}
-
-.line-numbers div {
-    height: 1.5em; /* Match line-height of textarea */
-}
-
-textarea {
-    width: 100%;
-    height: 100%;
+.controls button {
+    background: none;
     border: none;
-    padding: 15px;
-    resize: none;
-    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    cursor: pointer;
+    padding: 5px;
+    transition: transform 0.2s ease;
+}
+
+.controls button:hover {
+    transform: scale(1.1);
+}
+
+.controls img {
+    width: 20px;
+    height: 20px;
+}
+
+/* Textarea Styling */
+.text-textarea {
+    width: 100%;
+    height: 300px;
+    resize: vertical;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: monospace;
     font-size: 1em;
-    line-height: 1.5; /* Ensure line height matches line-numbers */
-    outline: none;
-    box-sizing: border-box;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-textarea:focus {
-    border: 2px solid #007bff;
+body.dark-mode .text-textarea {
+    background-color: #2c2c2c;
+    color: #e0e0e0;
+    border-color: #555;
 }
 
-/* Compare Button Styles */
-.compare-button-container {
-    text-align: center;
-    margin-top: 30px;
+/* Compare Button Styling */
+.compare-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 10%;
+    min-width: 50px;
 }
 
 .compare-btn {
-    background-color: #007bff;
-    color: #fff;
+    background-color: #2196F3;
     border: none;
-    padding: 15px;
     border-radius: 50%;
+    width: 50px;
+    height: 50px;
     cursor: pointer;
-    display: inline-flex;
+    transition: background-color 0.3s ease;
+    display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.3s ease;
+}
+
+.compare-btn:hover {
+    background-color: #1976D2;
 }
 
 .compare-btn img {
@@ -129,125 +332,160 @@ textarea:focus {
     height: 24px;
 }
 
-.compare-btn:hover {
-    background-color: #0056b3;
+/* Diff Container Styling */
+.diff-container {
+    margin-top: 40px;
+    border-top: 2px solid #ddd;
+    padding-top: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-/* Compare Viewer Styles */
-.compare-view {
-    display: none;
-    padding: 15px;
-    white-space: pre-wrap;
-    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-    background-color: #f8f9fa;
-    border-top: 1px solid #ddd;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-    overflow: auto;
+body.dark-mode .diff-container {
+    background-color: #1e1e1e;
+    border-color: #f30000;
 }
 
-.compare-view h3 {
-    margin-top: 0;
-    color: #333;
+.diff-container h2 {
+    margin-bottom: 20px;
+    text-align: center;
 }
 
-.diff-header {
+/* Summary Counts Styling */
+.diff-summary {
+    margin-bottom: 15px;
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
+    gap: 20px;
+    justify-content: center;
+    font-size: 1.1em;
 }
 
-.diff-header span {
-    font-size: 0.9em;
-    color: #666;
+.diff-summary p {
+    margin: 0;
 }
 
-.diff-content {
-    max-height: 300px;
-    overflow: auto;
-}
 
-.diff-content div {
-    display: flex;
-    align-items: flex-start;
-}
 
-.diff-content .line-number {
-    width: 40px;
-    padding-right: 10px;
-    text-align: right;
-    color: #999;
-    user-select: none;
-    font-size: 0.9em;
-}
 
-.diff-content .line-text {
-    flex: 1;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    font-size: 0.9em;
-}
-
-/* Highlight entire lines in Text 1 Viewer (Removals) */
-#compareView1 .line-text.deletion {
-    background-color: #f8d7da; /* Light red */
-}
-
-/* Highlight entire lines in Text 2 Viewer (Additions) */
-#compareView2 .line-text.addition {
-    background-color: #d4edda; /* Light green */
-}
-
-/* Highlight specific deletions in Text 1 Viewer (Bright Red) */
-#compareView1 .line-text .bright-deletion {
-    background-color: #f5c6cb; /* Bright red */
-    text-decoration: line-through;
-}
-
-/* Highlight specific additions in Text 2 Viewer (Dark Green) */
-#compareView2 .line-text .bright-addition {
-    background-color: #c3e6cb; /* Dark green */
-}
-
-/* Optional: Improve visibility and readability */
-#compareView1 .line-text,
-#compareView2 .line-text {
-    padding: 2px 4px;
+/* CodeMirror MergeView Styling */
+#diffView .CodeMirror {
+    height: auto; /* Adjust height as needed */
+    border: 1px solid #ddd;
     border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+.diff-summary strong {
+    color: #4CAF50; /* Green color for counts */
+}
+
+.diff-summary strong {
+    color: #0b00e0; /* Lighter green in dark mode */
+}
+
+
+
+/* Highlight entire lines with differences */
+.CodeMirror-merge-r-deleted,
+.CodeMirror-merge-r-deleted {
+    background-color: #ee6262;
+    color: #000000
+}
+/* above was the thing that stes the colour of the deleted text, below one inserted. */
+.CodeMirror-merge-r-inserted,
+.CodeMirror-merge-r-inserted {
+    background-color: #00ec0c;
+    color: #000000
+}
+.CodeMirror-merge-r-chunk,
+.CodeMirror-merge-l-chunk {
+    background-color: #78ff5279;
+    border-left: 2px solid #990000
+
+}
+
+
+/* Below is for managing "added or deleted lines" */
+/* .CodeMirror-merge-l-deleted, .CodeMirror-merge-r-deleted {
+    background-color: #ffdddd; 
+    text-decoration: line-through;
+    color: #d00000;
+} */
+/* Below controls addition lines like above */
+/* .CodeMirror-merge-l-inserted, .CodeMirror-merge-r-inserted {
+    background-color: #ddffdd;
+    color: #007700; 
+} */
+
+/* Footer styling */
+.footer {
+    margin-top: 10%;
+    padding: 20px 0;
+    background-color: #1C1D21; /* Dark contrasting background */
+    color: #fff; /* White text for contrast */
+    text-align: center;
+}
+
+.footer p {
+    margin: 0 0 10px;
+    font-size: 1.2em;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.social-icon {
+    width: 30px;
+    height: 30px;
+    fill: #ffffff; /* Ensure SVG icons are white for contrast */
+    transition: transform 0.3s ease;
+}
+
+.social-icon:hover {
+    transform: scale(1.1); /* Slight zoom on hover */
+}
+.feedback {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+
+/* Expandable Text Box Styling */
+.text-box.expanded {
+    flex: 1 1 100%;
+}
+
+.text-box:not(.expanded) {
+    flex: 1 1 45%;
+}
+
+.text-box.expanded .text-textarea {
+    height: 500px; /* Increased height when expanded */
+}
+
+.text-box:not(.expanded) .text-textarea {
+    height: 300px; /* Default height */
 }
 
 /* Responsive Design */
-@media (max-width: 1200px) {
-    .text-container {
-        flex-wrap: wrap;
-    }
-
-    .text-box {
-        width: 48%;
-    }
-}
-
-@media (max-width: 900px) {
+@media (max-width: 768px) {
     .text-container {
         flex-direction: column;
-        align-items: center;
     }
 
-    .text-box {
-        width: 100%;
+    .text-box, .compare-container {
+        flex: 1 1 100%;
     }
 
-    .compare-button-container {
-        margin-top: 20px;
-    }
-}
-
-@media (max-width: 600px) {
-    .textarea-container {
-        height: 300px;
-    }
-
-    .compare-view {
-        max-height: 400px;
+    .compare-container {
+        margin: 20px 0;
     }
 }

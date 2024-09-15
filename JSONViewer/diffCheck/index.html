@@ -1,66 +1,191 @@
-<!-- JSONViewer/diffCheck/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>DiffCheck - Text Comparison Tool</title>
+    <title>Check Difference</title>
+    
+
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+
+    <!-- Optional: CodeMirror Theme (e.g., Material) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material.min.css">
+
+    <!-- CodeMirror JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+
+    <!-- CodeMirror Text Mode -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+
+    <!-- diff_match_patch Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js"></script>
+
+    <!-- CodeMirror Merge Addon CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/merge/merge.min.css">
+
+    <!-- CodeMirror Merge Addon JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/merge/merge.min.js"></script>
+
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Header Section -->
+    <div class="header">
+        <h1>Code Diff checker</h1>
+    </div>
+
+    
+
+    <!-- Sub-header Section -->
+    <div class="sub-header">
+        <a href="../index.html" target="_blank" class="top-right-link">
+            <img src="icons/JSONico.svg" alt="Google Link" class="icon-code"/>
+        </a>
+        <div class="toggle-container">
+            <label class="switch">
+                <input type="checkbox" id="mode-toggle">
+                <span class="slider round"></span>
+            </label>
+            <span class="mode-label">Dark Mode</span>
+        </div>
+    </div>
+
+    <!-- "Out of Order" SVG Below the Toggle -->
+    
+
+    <!-- Torchlight Effect Elements (Initially Hidden) -->
+    <div id="darkness" class="darkness hidden">
+        <div id="light" class="light">
+            <span class="shadow"></span>
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
     <div class="container">
-        <h1>DiffCheck - Text Comparison Tool</h1>
+        <!-- Text Input Boxes -->
         <div class="text-container">
             <!-- Text Input 1 -->
             <div class="text-box" id="textBox1">
                 <div class="text-header">
-                    <h2>Text 1</h2>
-                    <span id="lineCount1">Lines: 0</span>
-                </div>
-                <div class="textarea-container">
-                    <div class="line-numbers" id="lineNumbers1">1</div>
-                    <textarea id="textInput1" placeholder="Enter text here..." oninput="updateLineCount('textInput1', 'lineCount1')"></textarea>
-                </div>
-                <!-- Compare Viewer for Text 1 -->
-                <div id="compareView1" class="compare-view">
-                    <h3>Text 1 Differences</h3>
-                    <div class="diff-header">
-                        <span id="additions1">Additions: 0</span>
-                        <span id="deletions1">Deletions: 0</span>
+                    <h2>ORIGINAL CODE</h2>
+                    <div class="controls">
+                        <button class="expand-btn" onclick="toggleExpand('textBox1')">
+                            <img src="icons/expand-icon.svg" alt="Expand Icon" />
+                        </button>
+                        <button class="copy-btn" onclick="copyText('textInput1')">
+                            <img src="icons/copy-icon.svg" alt="Copy Text" />
+                        </button>
                     </div>
-                    <div class="diff-content" id="diffContent1"></div>
                 </div>
+                <textarea id="textInput1" class="text-textarea" placeholder="Enter first text here..."></textarea>
+            </div>
+
+            <!-- Compare Button -->
+            <div class="compare-container">
+                <button class="compare-btn" onclick="compareText()">
+                    <img src="icons/compare-icon.svg" alt="Compare Icon" />
+                </button>
             </div>
 
             <!-- Text Input 2 -->
             <div class="text-box" id="textBox2">
                 <div class="text-header">
-                    <h2>Text 2</h2>
-                    <span id="lineCount2">Lines: 0</span>
-                </div>
-                <div class="textarea-container">
-                    <div class="line-numbers" id="lineNumbers2">1</div>
-                    <textarea id="textInput2" placeholder="Enter text here..." oninput="updateLineCount('textInput2', 'lineCount2')"></textarea>
-                </div>
-                <!-- Compare Viewer -->
-                <!-- Compare Viewer for Text 2 -->
-                <div id="compareView2" class="compare-view">
-                    <h3>Text 2 Differences</h3>
-                    <div class="diff-header">
-                        <span id="additions2">Additions: 0</span>
-                        <span id="deletions2">Deletions: 0</span>
+                    <h2>NEW CODE</h2>
+                    <div class="controls">
+                        <button class="expand-btn" onclick="toggleExpand('textBox2')">
+                            <img src="icons/expand-icon.svg" alt="Expand Icon" />
+                        </button>
+                        <button class="copy-btn" onclick="copyText('textInput2')">
+                            <img src="icons/copy-icon.svg" alt="Copy Text" />
+                        </button>
                     </div>
-                    <div class="diff-content" id="diffContent2"></div>
                 </div>
+                <textarea id="textInput2" class="text-textarea" placeholder="Enter second text here..."></textarea>
             </div>
         </div>
 
-        <!-- Compare Button -->
-        <div class="compare-button-container">
-            <button class="compare-btn" onclick="compareTexts()">
-                <img src="icons/compare-icon.svg" alt="Compare Icon" />
-            </button>
+        <!-- Compare Viewer Container -->
+        <div id="diffContainer" class="diff-container hidden">
+            <h2>Code Comparison</h2>
+            <!-- Summary Counts -->
+            <div class="diff-summary">
+                <p>Lines Added: <strong id="linesAdded">0</strong></p>
+                <p>Lines Deleted: <strong id="linesDeleted">0</strong></p>
+            </div>
+            <!-- MergeView will render here -->
+            <div id="diffView"></div>
         </div>
     </div>
+    <footer class="footer">
+        <p>Connect with me</p>
+        <div class="social-links">
+            <a href="https://www.linkedin.com/in/nihar874/" target="_blank">
+                <img src="icons/linkedin.svg" alt="LinkedIn" class="social-icon">
+            </a>
+            <a href="https://x.com/NiharBasisth" target="_blank">
+                <img src="icons/twitter.svg" alt="Twitter" class="social-icon">
+            </a>
+            <a href="https://github.com/Nightfury874" target="_blank">
+                <img src="icons/github.svg" alt="GitHub" class="social-icon">
+            </a>
+        </div>
+        <div class = "feedback">
+            <p>Have a suggestion or found a bug? <a href="https://www.google.com">Let me know</a></p>
+        </div>
+        
+    </footer>
+
+
+    <!-- JavaScript for Dark Mode and Torchlight Effect -->
+    <script>
+        // Dark Mode Toggle
+        const toggleSwitch = document.getElementById('mode-toggle');
+        const darkness = document.getElementById('darkness');
+        const light = document.getElementById('light');
+
+        const outOfOrderDark = document.querySelector('.out-of-order-dark');
+
+        toggleSwitch.addEventListener('change', function() {
+            if (this.checked) {
+                document.body.classList.add('dark-mode');
+                darkness.classList.remove('hidden');
+                outOfOrderDark.classList.remove('hidden');
+                setTimeout(() => {
+                    outOfOrderDark.classList.add('hidden');
+                }, 4000);
+            } else {
+                document.body.classList.remove('dark-mode');
+                darkness.classList.add('hidden');
+            }
+        });
+
+        // Torchlight Effect
+        function updateTorch(e) {
+            let x, y;
+            if (e.type === 'touchmove') {
+                x = e.touches[0].clientX - 150;
+                y = e.touches[0].clientY - 150;
+            } else {
+                x = e.clientX - 150;
+                y = e.clientY - 150;
+            }
+
+            light.style.left = x + "px";
+            light.style.top = y + "px";
+        }
+
+        document.addEventListener('mousemove', function(e) {
+            if (document.body.classList.contains('dark-mode')) {
+                updateTorch(e);
+            }
+        });
+
+        document.addEventListener('touchmove', function(e) {
+            if (document.body.classList.contains('dark-mode')) {
+                updateTorch(e);
+            }
+        });
+    </script>
 
     <script src="engine.js"></script>
 </body>
