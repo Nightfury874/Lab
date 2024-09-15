@@ -146,32 +146,23 @@
     <script>
         // Dark Mode Toggle
         const toggleSwitch = document.getElementById('mode-toggle');
-        console.log("Switch toggle 1");
         const darkness = document.getElementById('darkness');
-        console.log("Switch toggle 2");
         const light = document.getElementById('light');
-        console.log("Switch toggle 3");
 
         // const outOfOrderLight = document.querySelector('.out-of-order-light');
         const outOfOrderDark = document.querySelector('.out-of-order-dark');
-        console.log("Switch toggle 4");
 
         toggleSwitch.addEventListener('change', function() {
             if (this.checked) {
                 document.body.classList.add('dark-mode');
-                console.log("Switch toggle 5");
                 darkness.classList.remove('hidden');
                 // outOfOrderLight.classList.add('hidden');
                 outOfOrderDark.classList.remove('hidden');
-                console.log("Switch toggle 6");
             } else {
                 document.body.classList.remove('dark-mode');
-                console.log("Switch toggle 7");
                 darkness.classList.add('hidden');
-                console.log("Switch toggle 8");
                 // outOfOrderLight.classList.remove('hidden');
                 outOfOrderDark.classList.add('hidden');
-                console.log("Switch toggle 9");
             }
         });
 
@@ -199,7 +190,6 @@
         document.addEventListener('touchmove', function(e) {
             if (document.body.classList.contains('dark-mode')) {
                 updateTorch(e);
-                console.log("Switch toggle 11");
             }
         });
     </script>
