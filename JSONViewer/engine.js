@@ -304,7 +304,6 @@ function compareJSON() {
 
         // Display the diff container
         diffContainer.classList.remove('hidden');
-        console.log("recached diff counter");
 
         // Scroll to the diff view
         diffContainer.scrollIntoView({ behavior: 'smooth' });

@@ -135,10 +135,8 @@ function compareText() {
         diffs.forEach(part => {
             if (part[0] === 1) { // Insertion
                 linesAdded += part[1].split('\n').length - 1;
-                console.log("counting linesAdded: ", linesAdded);
             } else if (part[0] === -1) { // Deletion
                 linesDeleted += part[1].split('\n').length - 1;
-                console.log("counting linesDeleted: ", linesDeleted);
             }
         });
 
