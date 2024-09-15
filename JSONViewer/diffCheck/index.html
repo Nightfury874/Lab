@@ -1,0 +1,67 @@
+<!-- JSONViewer/diffCheck/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DiffCheck - Text Comparison Tool</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>DiffCheck - Text Comparison Tool</h1>
+        <div class="text-container">
+            <!-- Text Input 1 -->
+            <div class="text-box" id="textBox1">
+                <div class="text-header">
+                    <h2>Text 1</h2>
+                    <span id="lineCount1">Lines: 0</span>
+                </div>
+                <div class="textarea-container">
+                    <div class="line-numbers" id="lineNumbers1">1</div>
+                    <textarea id="textInput1" placeholder="Enter text here..." oninput="updateLineCount('textInput1', 'lineCount1')"></textarea>
+                </div>
+                <!-- Compare Viewer for Text 1 -->
+                <div id="compareView1" class="compare-view">
+                    <h3>Text 1 Differences</h3>
+                    <div class="diff-header">
+                        <span id="additions1">Additions: 0</span>
+                        <span id="deletions1">Deletions: 0</span>
+                    </div>
+                    <div class="diff-content" id="diffContent1"></div>
+                </div>
+            </div>
+
+            <!-- Text Input 2 -->
+            <div class="text-box" id="textBox2">
+                <div class="text-header">
+                    <h2>Text 2</h2>
+                    <span id="lineCount2">Lines: 0</span>
+                </div>
+                <div class="textarea-container">
+                    <div class="line-numbers" id="lineNumbers2">1</div>
+                    <textarea id="textInput2" placeholder="Enter text here..." oninput="updateLineCount('textInput2', 'lineCount2')"></textarea>
+                </div>
+                <!-- Compare Viewer -->
+                <!-- Compare Viewer for Text 2 -->
+                <div id="compareView2" class="compare-view">
+                    <h3>Text 2 Differences</h3>
+                    <div class="diff-header">
+                        <span id="additions2">Additions: 0</span>
+                        <span id="deletions2">Deletions: 0</span>
+                    </div>
+                    <div class="diff-content" id="diffContent2"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Compare Button -->
+        <div class="compare-button-container">
+            <button class="compare-btn" onclick="compareTexts()">
+                <img src="icons/compare-icon.svg" alt="Compare Icon" />
+            </button>
+        </div>
+    </div>
+
+    <script src="engine.js"></script>
+</body>
+</html>
