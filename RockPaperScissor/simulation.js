@@ -4,9 +4,14 @@ const canvas = document.getElementById('simulationCanvas');
 const ctx = canvas.getContext('2d');
 
 let entities = [];
-let animationId;
+let animationId = null; // Initialize as null
 let matchDuration = 10; // Default duration
-let matchStartTime;
+let matchStartTime = null;
+
+// Placement variables
+let placementCircles = [];
+const placementOrder = ['rock', 'paper', 'scissors'];
+let currentPlacementIndex = 0;
 
 // Load images
 const images = {
@@ -25,7 +30,7 @@ for (let key in images) {
     images[key].onload = () => {
         imagesLoaded++;
         if (imagesLoaded === 3) {
-            // Images are loaded, wait for user to click 'Start'
+            // Images are loaded, enable start button if needed
         }
     };
 }
@@ -67,6 +72,36 @@ class Entity {
 function initEntities() {
     entities = [];
 
+    if (placementCircles.length === 0) {
+        // If no placement circles, fallback to random placement
+        return initRandomEntities();
+    }
+
+    placementCircles.forEach(circle => {
+        for (let i = 0; i < circle.count; i++) {
+            let angle = Math.random() * 2 * Math.PI;
+            let radius = Math.random() * (circle.radius - 16); // 16 is entity radius
+            let x = circle.x + radius * Math.cos(angle);
+            let y = circle.y + radius * Math.sin(angle);
+
+            // Ensure entities spawn within canvas bounds
+            x = Math.max(16, Math.min(canvas.width - 16, x));
+            y = Math.max(16, Math.min(canvas.height - 16, y));
+
+            entities.push(new Entity(x, y, circle.type));
+        }
+    });
+
+    // After spawning, clear placement circles
+    placementCircles = [];
+    currentPlacementIndex = 0;
+
+    return true;
+}
+
+function initRandomEntities() {
+    entities = [];
+
     // Get user input values
     const rockCount = parseInt(document.getElementById('rockCount').value) || 0;
     const paperCount = parseInt(document.getElementById('paperCount').value) || 0;
@@ -97,8 +132,9 @@ function initEntities() {
 }
 
 function checkCollisions() {
-    for (let i = 0; i < entities.length; i++) {
-        for (let j = i + 1; j < entities.length; j++) {
+    // Iterate backwards to safely remove entities during iteration
+    for (let i = entities.length - 1; i >= 0; i--) {
+        for (let j = i - 1; j >= 0; j--) {
             let e1 = entities[i];
             let e2 = entities[j];
             let dx = e1.x - e2.x;
@@ -106,13 +142,16 @@ function checkCollisions() {
             let distance = Math.hypot(dx, dy);
 
             if (distance < e1.radius + e2.radius) {
-                resolveInteraction(e1, e2);
+                resolveInteraction(i, j);
             }
         }
     }
 }
 
-function resolveInteraction(e1, e2) {
+function resolveInteraction(index1, index2) {
+    let e1 = entities[index1];
+    let e2 = entities[index2];
+
     if (e1.type === e2.type) return; // Same type, no change
 
     const defeats = {
@@ -122,39 +161,76 @@ function resolveInteraction(e1, e2) {
     };
 
     if (defeats[e1.type] === e2.type) {
-        e2.updateType(e1.type); // e1 wins, e2 changes type
+        // e1 defeats e2; remove e2
+        entities.splice(index2, 1);
     } else {
-        e1.updateType(e2.type); // e2 wins, e1 changes type
+        // e2 defeats e1; remove e1
+        entities.splice(index1, 1);
     }
 }
-document.getElementById('landingPage').style.opacity = '0';
-setTimeout(() => {
-    document.getElementById('landingPage').style.display = 'none';
-    document.getElementById('simulationContainer').style.display = 'flex';
-    document.getElementById('simulationContainer').style.opacity = '1';
-}, 500);
 
+// Handle Placement
+canvas.addEventListener('click', handleCanvasClick);
+
+function handleCanvasClick(event) {
+    if (animationId !== null) return; // Prevent placement during simulation
+
+    // Determine mouse position relative to canvas
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    // Get current placement type based on order
+    if (currentPlacementIndex >= placementOrder.length) {
+        alert('All entity types have been placed.');
+        return;
+    }
+
+    const type = placementOrder[currentPlacementIndex];
+    const countInput = document.getElementById(`${type}Count`);
+    const count = parseInt(countInput.value) || 0;
+
+    if (count === 0) {
+        alert(`Please enter a number for ${capitalize(type)}.`);
+        return;
+    }
+
+    // Create a placement circle
+    const radius = Math.max(20, count); // Ensure minimum size for visibility
+    placementCircles.push({ x, y, type, count, radius });
+
+    currentPlacementIndex++;
+
+    // Draw the circle temporarily
+    drawPlacementCircles();
+}
 
 function animate() {
+    // Start the animation loop by requesting the next frame
+    animationId = requestAnimationFrame(animate);
+
     // Draw a subtle grid background on the canvas
     drawBackground();
 
+    // Update and render entities
     entities.forEach(entity => {
         entity.updatePosition();
         entity.render(ctx);
     });
 
+    // Check for collisions and resolve interactions
     checkCollisions();
+
+    // Update statistics
     updateStats();
 
     // Check if match duration has been reached
     const elapsedTime = (Date.now() - matchStartTime) / 1000;
     if (elapsedTime >= matchDuration) {
         endMatch();
-    } else {
-        animationId = requestAnimationFrame(animate);
     }
 }
+
 function drawBackground() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -178,8 +254,31 @@ function drawBackground() {
         ctx.lineTo(canvas.width, y);
         ctx.stroke();
     }
+
+    // Draw placement circles if any (only when not animating)
+    if (animationId === null && placementCircles.length > 0) {
+        drawPlacementCircles();
+    }
 }
 
+function drawPlacementCircles() {
+    placementCircles.forEach(circle => {
+        // Draw semi-transparent circle
+        ctx.beginPath();
+        ctx.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0, 140, 186, 0.2)';
+        ctx.fill();
+        ctx.strokeStyle = '#008CBA';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Draw label
+        ctx.fillStyle = '#000';
+        ctx.font = '16px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(`${capitalize(circle.type)} (${circle.count})`, circle.x, circle.y);
+    });
+}
 
 function updateStats() {
     let counts = { 'rock': 0, 'paper': 0, 'scissors': 0 };
@@ -202,15 +301,17 @@ function declareWinner() {
         counts[entity.type]++;
     });
 
-    // Convert counts to an array and sort by counts in descending order
-    let results = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    // Determine the winner
+    let maxCount = Math.max(counts.rock, counts.paper, counts.scissors);
+    let winners = Object.keys(counts).filter(type => counts[type] === maxCount);
 
     let winnerDiv = document.getElementById('winner');
-    winnerDiv.innerHTML = `
-        Winner: ${capitalize(results[0][0])} (${results[0][1]} entities)<br>
-        Runner-up: ${capitalize(results[1][0])} (${results[1][1]} entities)<br>
-        Third Place: ${capitalize(results[2][0])} (${results[2][1]} entities)
-    `;
+    if (winners.length === 1) {
+        winnerDiv.innerHTML = `Winner: ${capitalize(winners[0])} (${counts[winners[0]]} entities)`;
+    } else {
+        // Handle tie
+        winnerDiv.innerHTML = `It's a tie between: ${winners.map(capitalize).join(', ')} (${maxCount} entities each)`;
+    }
 }
 
 function capitalize(word) {
@@ -227,32 +328,39 @@ function resetMatch() {
     cancelAnimationFrame(animationId);
     animationId = null;
     document.getElementById('winner').innerHTML = '';
-    initEntities(); // Reset entities based on current input values
+    placementCircles = [];
+    currentPlacementIndex = 0;
+    initEntities(); // Reset entities based on current input values or placements
     updateStats();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 // Controls
 document.getElementById('startBtn').addEventListener('click', () => {
-    if (!animationId && imagesLoaded === 3) {
-        if (initEntities()) { // Initialize entities based on user input
-            // Get match duration
-            matchDuration = parseInt(document.getElementById('matchDuration').value) || 10;
-            if (matchDuration <= 0) {
-                alert('Please enter a valid match duration.');
-                return;
-            }
+    if (animationId !== null) return; // Prevent multiple simulations
+    if (imagesLoaded !== 3) {
+        alert('Images are still loading. Please wait.');
+        return;
+    }
 
-            document.getElementById('winner').innerHTML = ''; // Clear previous winner
-            updateStats();
-            matchStartTime = Date.now();
-            animate();
-        }
+    // Get match duration
+    matchDuration = parseInt(document.getElementById('matchDuration').value) || 10;
+    if (matchDuration <= 0) {
+        alert('Please enter a valid match duration.');
+        return;
+    }
+
+    // Initialize entities based on placement or input
+    if (initEntities()) { // Initialize entities based on placement or user input
+        document.getElementById('winner').innerHTML = ''; // Clear previous winner
+        updateStats();
+        matchStartTime = Date.now();
+        animate(); // Start the animation loop
     }
 });
 
 document.getElementById('pauseBtn').addEventListener('click', () => {
-    if (animationId) {
+    if (animationId !== null) {
         cancelAnimationFrame(animationId);
         animationId = null;
         declareWinner();

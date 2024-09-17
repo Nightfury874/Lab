@@ -101,11 +101,7 @@
 </head>
 <body>
 
-<div id="landingPage">
-    <h1>Welcome to the Rock-Paper-Scissors Simulation</h1>
-    <p>Experience the classic game in a dynamic and interactive way.</p>
-    <button id="enterBtn">Enter Simulation</button>
-</div>
+
 
 <div id="simulationContainer">
     <canvas id="simulationCanvas" width="800" height="600"></canvas>
@@ -138,6 +134,15 @@
         </div>
         <div id="stats">
             <!-- Entity counts and probabilities will be displayed here -->
+            <p>Rocks: <span id="rockCountDisplay">0</span> (<span id="rockPercentage">0</span>%)</p>
+            <p>Papers: <span id="paperCountDisplay">0</span> (<span id="paperPercentage">0</span>%)</p>
+            <p>Scissors: <span id="scissorsCountDisplay">0</span> (<span id="scissorsPercentage">0</span>%)</p>
+        
+
+            <h3>Defeated Counts:</h3>
+            <p>Rocks defeated Scissors: <span id="rockDefeatedScissors">0</span></p>
+            <p>Papers defeated Rocks: <span id="paperDefeatedRocks">0</span></p>
+            <p>Scissors defeated Papers: <span id="scissorsDefeatedPapers">0</span></p>
         </div>
         <div id="winner">
             <!-- Winner will be displayed here -->
