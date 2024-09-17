@@ -49,17 +49,20 @@
             background-color: #f9f9f9;
 }
         #simulationCanvas {
+            margin-top: 2%;
             border: 1px solid #ccc;
             background-color: #ffffff;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: auto ;
         }
         #controls {
             margin-top: 20px;
             display: flex;
             flex-direction: column;
+            overflow-y:scroll ;
             align-items: center;
         }
-        #entityInputs, #durationInput, #stats, #winner {
+        #entityInputs, #durationInput, #winner {
             margin-bottom: 15px;
             text-align: center;
         }
@@ -89,7 +92,7 @@
         button:hover {
             background-color: #005f7f;
         }
-        #stats, #winner {
+        #winner {
             font-size: 1.1em;
             color: #333;
         }
@@ -110,16 +113,25 @@
         <div id="entityInputs">
             <label>
                 Rocks:
-                <input type="number" id="rockCount" value="33" min="0">
+                <input type="number" id="rockCount" value="10" min="0">
             </label>
             <label>
                 Papers:
-                <input type="number" id="paperCount" value="33" min="0">
+                <input type="number" id="paperCount" value="10" min="0">
             </label>
             <label>
                 Scissors:
-                <input type="number" id="scissorsCount" value="34" min="0">
+                <input type="number" id="scissorsCount" value="10" min="0">
             </label>
+            <label>
+                Lizards:
+                <input type="number" id="lizardCount" value="10" min="0">
+            </label>
+            <label>
+                Spocks:
+                <input type="number" id="spockCount" value="10" min="0">
+            </label>
+
         </div>
         <div id="durationInput">
             <label>
@@ -137,12 +149,8 @@
             <p>Rocks: <span id="rockCountDisplay">0</span> (<span id="rockPercentage">0</span>%)</p>
             <p>Papers: <span id="paperCountDisplay">0</span> (<span id="paperPercentage">0</span>%)</p>
             <p>Scissors: <span id="scissorsCountDisplay">0</span> (<span id="scissorsPercentage">0</span>%)</p>
-        
-
-            <h3>Defeated Counts:</h3>
-            <p>Rocks defeated Scissors: <span id="rockDefeatedScissors">0</span></p>
-            <p>Papers defeated Rocks: <span id="paperDefeatedRocks">0</span></p>
-            <p>Scissors defeated Papers: <span id="scissorsDefeatedPapers">0</span></p>
+            <p>Lizards</p> <span id="lizardCountDisplay">0</span> (<span id="lizardPercentage">0</span>%)
+            <p>Spocks</p> <span id="spockCountDisplay">0</span> (<span id="spockPercentage">0</span>%)
         </div>
         <div id="winner">
             <!-- Winner will be displayed here -->

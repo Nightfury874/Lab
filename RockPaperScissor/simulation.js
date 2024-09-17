@@ -8,28 +8,33 @@ let animationId = null; // Initialize as null
 let matchDuration = 10; // Default duration
 let matchStartTime = null;
 
+
 // Placement variables
 let placementCircles = [];
-const placementOrder = ['rock', 'paper', 'scissors'];
+const placementOrder = ['rock', 'paper', 'scissors', 'lizard', 'spock']; // Updated to include 'lizard' and 'spock'
 let currentPlacementIndex = 0;
 
 // Load images
 const images = {
     'rock': new Image(),
     'paper': new Image(),
-    'scissors': new Image()
+    'scissors': new Image(),
+    'lizard': new Image(), // Added 'lizard'
+    'spock': new Image()   // Added 'spock'
 };
 
 images.rock.src = 'images/rock.svg';
 images.paper.src = 'images/paper.svg';
 images.scissors.src = 'images/scissors.svg';
+images.lizard.src = 'images/lizard.svg'; // Added 'lizard' image source
+images.spock.src = 'images/spock.svg';   // Added 'spock' image source
 
 // Ensure images are loaded before starting simulation
 let imagesLoaded = 0;
 for (let key in images) {
     images[key].onload = () => {
         imagesLoaded++;
-        if (imagesLoaded === 3) {
+        if (imagesLoaded === 5) { // Updated to 5 images
             // Images are loaded, enable start button if needed
         }
     };
@@ -39,7 +44,7 @@ class Entity {
     constructor(x, y, type) {
         this.x = x;
         this.y = y;
-        this.type = type; // 'rock', 'paper', or 'scissors'
+        this.type = type; // 'rock', 'paper', 'scissors', 'lizard', or 'spock'
         this.vx = Math.random() * 2 - 1; // Random velocity
         this.vy = Math.random() * 2 - 1;
         this.radius = 16; // Radius for collision detection
@@ -106,8 +111,10 @@ function initRandomEntities() {
     const rockCount = parseInt(document.getElementById('rockCount').value) || 0;
     const paperCount = parseInt(document.getElementById('paperCount').value) || 0;
     const scissorsCount = parseInt(document.getElementById('scissorsCount').value) || 0;
+    const lizardCount = parseInt(document.getElementById('lizardCount').value) || 0; // Added 'lizardCount'
+    const spockCount = parseInt(document.getElementById('spockCount').value) || 0;   // Added 'spockCount'
 
-    const totalEntities = rockCount + paperCount + scissorsCount;
+    const totalEntities = rockCount + paperCount + scissorsCount + lizardCount + spockCount; // Updated total
 
     // Ensure there is at least one entity
     if (totalEntities === 0) {
@@ -127,6 +134,8 @@ function initRandomEntities() {
     createEntities(rockCount, 'rock');
     createEntities(paperCount, 'paper');
     createEntities(scissorsCount, 'scissors');
+    createEntities(lizardCount, 'lizard'); // Create 'lizard' entities
+    createEntities(spockCount, 'spock');   // Create 'spock' entities
 
     return true; // Return true to indicate successful initialization
 }
@@ -155,12 +164,14 @@ function resolveInteraction(index1, index2) {
     if (e1.type === e2.type) return; // Same type, no change
 
     const defeats = {
-        'rock': 'scissors',
-        'scissors': 'paper',
-        'paper': 'rock'
+        'rock': ['scissors', 'lizard'],     // Rock crushes scissors and lizard
+        'paper': ['rock', 'spock'],         // Paper covers rock and disproves Spock
+        'scissors': ['paper', 'lizard'],    // Scissors cuts paper and decapitates lizard
+        'lizard': ['spock', 'paper'],       // Lizard poisons Spock and eats paper
+        'spock': ['scissors', 'rock']       // Spock smashes scissors and vaporizes rock
     };
 
-    if (defeats[e1.type] === e2.type) {
+    if (defeats[e1.type].includes(e2.type)) {
         // e1 defeats e2; remove e2
         entities.splice(index2, 1);
     } else {
@@ -187,16 +198,16 @@ function handleCanvasClick(event) {
     }
 
     const type = placementOrder[currentPlacementIndex];
-    const countInput = document.getElementById(`${type}Count`);
+    const countInput = document.getElementById(`${type}Count`); // Fixed template literal
     const count = parseInt(countInput.value) || 0;
 
     if (count === 0) {
-        alert(`Please enter a number for ${capitalize(type)}.`);
+        alert(`Please enter a number for ${capitalize(type)}.`); // Fixed template literal
         return;
     }
 
     // Create a placement circle
-    const radius = Math.max(20, count); // Ensure minimum size for visibility
+    const radius = Math.max(20, count * 10); // Adjusted radius based on count for better visibility
     placementCircles.push({ x, y, type, count, radius });
 
     currentPlacementIndex++;
@@ -281,7 +292,7 @@ function drawPlacementCircles() {
 }
 
 function updateStats() {
-    let counts = { 'rock': 0, 'paper': 0, 'scissors': 0 };
+    let counts = { 'rock': 0, 'paper': 0, 'scissors': 0, 'lizard': 0, 'spock': 0 }; // Updated to include 'lizard' and 'spock'
     entities.forEach(entity => {
         counts[entity.type]++;
     });
@@ -291,18 +302,20 @@ function updateStats() {
     statsDiv.innerHTML = `
         Rocks: ${counts.rock} (${((counts.rock / total) * 100).toFixed(1)}%)<br>
         Papers: ${counts.paper} (${((counts.paper / total) * 100).toFixed(1)}%)<br>
-        Scissors: ${counts.scissors} (${((counts.scissors / total) * 100).toFixed(1)}%)
+        Scissors: ${counts.scissors} (${((counts.scissors / total) * 100).toFixed(1)}%)<br>
+        Lizards: ${counts.lizard} (${((counts.lizard / total) * 100).toFixed(1)}%)<br>
+        Spocks: ${counts.spock} (${((counts.spock / total) * 100).toFixed(1)}%)
     `;
 }
 
 function declareWinner() {
-    let counts = { 'rock': 0, 'paper': 0, 'scissors': 0 };
+    let counts = { 'rock': 0, 'paper': 0, 'scissors': 0, 'lizard': 0, 'spock': 0 };
     entities.forEach(entity => {
         counts[entity.type]++;
     });
 
     // Determine the winner
-    let maxCount = Math.max(counts.rock, counts.paper, counts.scissors);
+    let maxCount = Math.max(counts.rock, counts.paper, counts.scissors, counts.lizard, counts.spock);
     let winners = Object.keys(counts).filter(type => counts[type] === maxCount);
 
     let winnerDiv = document.getElementById('winner');
@@ -314,14 +327,11 @@ function declareWinner() {
     }
 }
 
-function capitalize(word) {
-    return word.charAt(0).toUpperCase() + word.slice(1);
-}
-
 function endMatch() {
     cancelAnimationFrame(animationId);
     animationId = null;
     declareWinner();
+
 }
 
 function resetMatch() {
@@ -333,12 +343,13 @@ function resetMatch() {
     initEntities(); // Reset entities based on current input values or placements
     updateStats();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
 }
 
-// Controls
+// --- Start Button Event Listener ---
 document.getElementById('startBtn').addEventListener('click', () => {
     if (animationId !== null) return; // Prevent multiple simulations
-    if (imagesLoaded !== 3) {
+    if (imagesLoaded !== 5) { // Updated to check for 5 images
         alert('Images are still loading. Please wait.');
         return;
     }
@@ -355,9 +366,14 @@ document.getElementById('startBtn').addEventListener('click', () => {
         document.getElementById('winner').innerHTML = ''; // Clear previous winner
         updateStats();
         matchStartTime = Date.now();
+
         animate(); // Start the animation loop
     }
 });
+
+function capitalize(word) {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+}
 
 document.getElementById('pauseBtn').addEventListener('click', () => {
     if (animationId !== null) {
