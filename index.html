@@ -9,8 +9,66 @@
     <!-- Link the external CSS file -->
     <link rel="stylesheet" href="styles/styles.css">
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script> <!-- Lottie player -->
+    <style>
+        /* Existing Styles */
+
+        /* Additional CSS for the Scroll Arrow */
+        .scroll-arrow {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: #555; /* Dark gray background */
+            color: #fff; /* White arrow */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s, background-color 0.3s;
+            z-index: 1000; /* Ensure it stays on top */
+            /* Ensure the arrow is focusable for accessibility */
+            outline: none;
+        }
+
+        .scroll-arrow:hover {
+            opacity: 1;
+            background-color: #333; /* Darker background on hover */
+        }
+
+        /* Arrow Icon (Using CSS) */
+        .scroll-arrow::after {
+            content: '↓'; /* Down arrow symbol */
+            font-size: 20px;
+        }
+
+        /* Pulse Animation Keyframes */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+            }
+            70% {
+                transform: scale(1.1);
+                box-shadow: 0 0 10px 10px rgba(255, 255, 255, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+
+        /* Pulse Animation Class */
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
 </head>
 <body>
+
+    <!-- Existing Content -->
 
     <!-- Dark Mode Toggle Switch -->
     <div class="toggle-container">
@@ -53,32 +111,61 @@
         <lottie-player src="https://lottie.host/27f84bc0-2419-498d-9204-6b0b814729c1/XsAf5H8AZd.json" background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></lottie-player>
     </div>
 
-   <!-- Tiles Section -->
     <!-- Tiles Section -->
-            <div class="tiles-container">
-                <div class="tile">
-                    <a href="RockPaperScissor/index.html" class="tile__inner tooltip-icon" data-tooltips="Try it out now">
-                        <img src="icons/RPSIcon.svg" alt="Rock Paper Scissors Simulator" class="tile__icon"/>
-                    </a>
-                </div>
-                <div class="tile">
-                    <a href="#" class="tile__inner tooltip-icon" data-tooltips="Coming soon...">
-                        <img src="icons/CollisionIcon.svg" alt="Collision Simulator" class="tile__icon"/>
-                    </a>
-                </div>
-                <div class="tile">
-                    <a href="WindTunnel/index.html" class="tile__inner tooltip-icon" data-tooltips="Try it out now">
-                        <img src="icons/WindTunnelIcon.svg" alt="Euler's Fluid Mechanics Simulator" class="tile__icon"/>
-                    </a>
-                </div>
-                <div class="tile">
-                    <a href="JSONViewer/index.html" class="tile__inner tooltip-icon" data-tooltips="Try it out now">
-                        <img src="icons/json.svg" alt="JSON Viewer" class="tile__icon"/>
-                    </a>
-                </div>
-            </div>
+    <div class="tiles-container">
+        <!-- Existing Tiles -->
+        <div class="tile">
+            <a href="RockPaperScissor/index.html" class="tile__inner tooltip-icon" data-tooltips="Try it out now">
+                <img src="icons/RPSIcon.svg" alt="Rock Paper Scissors Simulator" class="tile__icon"/>
+            </a>
+        </div>
+        <div class="tile">
+            <a href="#" class="tile__inner tooltip-icon" data-tooltips="Coming soon...">
+                <img src="icons/CollisionIcon.svg" alt="Collision Simulator" class="tile__icon"/>
+            </a>
+        </div>
+        <div class="tile">
+            <a href="WindTunnel/index.html" class="tile__inner tooltip-icon" data-tooltips="Try it out now">
+                <img src="icons/WindTunnelIcon.svg" alt="Euler's Fluid Mechanics Simulator" class="tile__icon"/>
+            </a>
+        </div>
+        <div class="tile">
+            <a href="JSONViewer/index.html" class="tile__inner tooltip-icon" data-tooltips="Try it out now">
+                <img src="icons/json.svg" alt="JSON Viewer" class="tile__icon"/>
+            </a>
+        </div>
+        <div class="tile">
+            <a href="https://nightfury874.github.io/QueensByLinkedinReplay/" class="tile__inner tooltip-icon" data-tooltips="Try it out now">
+                <img src="icons/Queens.svg" alt="Queens By Linkedin Replay" class="tile__icon"/>
+            </a>
+        </div>
+        <div class="tile">
+            <a href="https://nightfury874.github.io/MindfulBreathing/" class="tile__inner tooltip-icon" data-tooltips="Try it out now">
+                <img src="icons/Mindful breathing.svg" alt="Mindful Breathing" class="tile__icon"/>
+            </a>
+        </div>
 
-
+        <div class="tile">
+            <a href="https://github.com/marketplace/actions/generate-cloc-badge" class="tile__inner tooltip-icon" data-tooltips="Get it now">
+                <img src="icons/CLOC.svg" alt="CLOC Badge Generator" class="tile__icon"/>
+            </a>
+        </div>
+        <div class="tile">
+            <a href="https://nightfury874.github.io/DictionaryLol/" class="tile__inner tooltip-icon" data-tooltips="Get it now">
+                <img src="icons/Dict.svg" alt="Dictionary Lol" class="tile__icon"/>
+            </a>
+        </div>
+        <div class="tile">
+            <a href="https://nightfury874.github.io/EdgeBookmark/" class="tile__inner tooltip-icon" data-tooltips="Get it now">
+                <img src="icons/Bookmark.svg" alt="Edge Bookmark" class="tile__icon"/>
+            </a>
+        </div>
+        <div class="tile">
+            <a href="https://nightfury874.github.io/WebStickyNote/" class="tile__inner tooltip-icon" data-tooltips="Get it now">
+                <img src="icons/Sticky notes.svg" alt="Web Sticky Note" class="tile__icon"/>
+            </a>
+        </div>
+    </div>
 
     <a href="#" class="more-link">and more coming soon...</a>
 
@@ -98,7 +185,10 @@
         </div>
     </footer>
 
-    <!-- JavaScript for Dark Mode and Torchlight Effect -->
+    <!-- Scroll to Bottom Arrow -->
+    <div class="scroll-arrow" id="scroll-to-bottom" title="Scroll to Bottom" tabindex="0"></div>
+
+    <!-- JavaScript for Dark Mode, Torchlight Effect, and Scroll Arrow -->
     <script>
         // Dark Mode Toggle
         const toggleSwitch = document.getElementById('mode-toggle');
@@ -147,6 +237,56 @@
             if (document.body.classList.contains('dark-mode')) {
                 updateTorch(e);
             }
+        });
+
+        // Scroll to Bottom Functionality
+        const scrollToBottomBtn = document.getElementById('scroll-to-bottom');
+
+        scrollToBottomBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth'
+            });
+        });
+
+        // Pulse Animation Control
+        const scrollArrow = document.getElementById('scroll-to-bottom');
+
+        // Function to add the pulse class
+        function triggerPulse() {
+            scrollArrow.classList.add('pulse');
+            // Remove the pulse class after the animation duration to allow retriggering
+            setTimeout(() => {
+                scrollArrow.classList.remove('pulse');
+            }, 1500); // Duration matches the animation duration (1.5s)
+        }
+
+        // Trigger pulse on page load for the first 3 seconds
+        window.addEventListener('load', () => {
+            triggerPulse();
+            // Continue pulsing for the first 3 seconds
+            const initialPulseInterval = setInterval(() => {
+                triggerPulse();
+            }, 1500); // Every 1.5 seconds
+
+            // Stop the initial pulsing after 3 seconds
+            setTimeout(() => {
+                clearInterval(initialPulseInterval);
+            }, 3000);
+        });
+
+        // Trigger pulse when the user stops hovering over the arrow
+        scrollArrow.addEventListener('mouseleave', () => {
+            // Add a slight delay to ensure the mouse has fully left
+            setTimeout(() => {
+                triggerPulse();
+            }, 100);
+        });
+
+        // Optional: Trigger pulse when the arrow gains focus via keyboard
+        scrollArrow.addEventListener('focus', () => {
+            triggerPulse();
         });
     </script>
 
