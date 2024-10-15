@@ -1,5 +1,6 @@
 /* Import Poppins font */
 body {
+    position: relative;
     font-family: 'Poppins', sans-serif;
     text-align: center;
     background-color: #272831; /* Background color updated */
