@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RBMK Reactor Simulation – Ultimate Realism with Moderator & Fuel Loading</title>
+  <style>
+    /* Layout and color scheme for classroom presentation */
+    body {
+      margin: 0;
+      background-color: #121212;
+      color: #eee;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: row;
+      min-height: 100vh;
+    }
+    #mainContent {
+      flex: 3;
+      padding: 10px;
+      text-align: center;
+    }
+    #sidebar {
+      flex: 1;
+      padding: 20px;
+      background-color: #222;
+      border-left: 2px solid #444;
+      overflow-y: auto;
+      max-height: 100vh;
+    }
+    button, input[type="range"] {
+      padding: 8px 12px;
+      margin: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    canvas {
+      background: radial-gradient(circle, #333 0%, #000 80%);
+      border: 2px solid #444;
+      margin: 10px auto;
+      display: block;
+    }
+    #stats {
+      margin: 10px;
+      font-size: 1rem;
+      color: #ADFF2F;
+    }
+    h2, h3 {
+      margin-top: 0;
+    }
+    p {
+      text-align: left;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    #rodLabel, #fuelLabel {
+      font-size: 1rem;
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Main simulation area -->
+  <div id="mainContent">
+    <div id="controlPanel">
+      <button id="injectNeutron">Inject Neutron</button>
+      <button id="refuelReactor">Refuel Reactor</button>
+      <button id="coolReactor">Cool Reactor</button>
+      <button id="scramReactor">Scram Reactor</button>
+      <button id="resetSim">Reset Simulation</button>
+      <br/>
+      <label id="rodLabel" for="rodSlider">Control Rod Insertion: 0%</label>
+      <input type="range" id="rodSlider" min="0" max="100" value="0">
+      <br/>
+      <label id="fuelLabel" for="fuelSlider">Fuel Loading: 100%</label>
+      <input type="range" id="fuelSlider" min="0" max="100" value="100">
+      <p>
+        The reactor core below consists of four fuel containers; each contains a 20×20 lattice (400 positions).  
+        The “Fuel Loading” slider determines the percentage of positions filled with U‑235 fuel (the rest remain empty).  
+        The “Control Rod Insertion” slider sets the fraction of rods inserted.  
+        The effective fission probability is computed as:  
+        <br>
+        <code>p_fission = baseFissionProb × (1 – rodInsertion) × F(T) × (1 – xenon)</code>  
+        <br>
+        with F(T):
+        <br>
+        – If T < voidThreshold: F(T) = 1 – (T / MAX_TEMP)
+        <br>
+        – If T ≥ voidThreshold: F(T) = 1 + ((T – voidThreshold) / (MAX_TEMP – voidThreshold))
+        <br>
+        and xenon builds up with each fission and decays slowly.
+        <br><br>
+        In addition, each container has water moderator: as neutrons pass through the container, they are slowed further and the water heats up.
+        Water starts cool (blue) and becomes red as it heats, turning gray if vaporized.
+        Also, some fuel positions may randomly spawn with spent fuel.
+      </p>
+      <div id="stats">
+        Fission Count: 0 | Total Energy: 0 | Capacity: 0% | Avg. Temp: 0 | Avg. Xenon: 0 | kₑff: 0 | Avg. Neutron Speed: 0
+      </div>
+    </div>
+    <!-- Reactor simulation canvas -->
+    <canvas id="simulationCanvas" width="800" height="600"></canvas>
+    <!-- Live graph canvas for reactor metrics -->
+    <canvas id="graphCanvas" width="800" height="200"></canvas>
+    <!-- Live graph canvas for average neutron speed -->
+    <canvas id="graph2Canvas" width="800" height="200"></canvas>
+  </div>
+
+  <!-- Sidebar with background and definitions -->
+  <div id="sidebar">
+    <h2>RBMK Reactor Simulation – Ultimate Realism with Moderator & Fuel Loading</h2>
+    <h3>Background</h3>
+    <p>
+      <strong>Uranium‑235 (U‑235):</strong> A fissile isotope used as nuclear fuel. Each fuel particle represents one U‑235 nucleus.
+    </p>
+    <p>
+      <strong>Nuclear Fission:</strong> When U‑235 absorbs a neutron, it fissions—releasing additional neutrons and energy.
+    </p>
+    <p>
+      <strong>RBMK Reactor:</strong> A reactor design that uses a lattice of fuel channels. Our simulation divides the core into four fuel containers,
+      each containing a symmetric 20×20 lattice.
+    </p>
+    <p>
+      <strong>Fuel Loading:</strong> You can set what percentage of lattice positions are filled with U‑235. Lower fuel loading means fewer fissionable nuclei.
+    </p>
+    <p>
+      <strong>Boron Rods (Control Rods):</strong> These absorb neutrons and reduce the effective fission probability. Here, their absorption probability is:
+      <br>
+      <code>p_absorb = rodInsertion × 0.3</code>
+    </p>
+    <p>
+      <strong>Temperature Feedback & Void Effect:</strong> Fission events raise container temperature. Below a threshold (voidThreshold) reactivity decreases;
+      above it, a positive void coefficient increases reactivity.
+    </p>
+    <p>
+      <strong>Xenon Poisoning:</strong> Fission produces xenon, a strong neutron absorber. Xenon builds up with fission and decays slowly, reducing reactivity.
+    </p>
+    <p>
+      <strong>Moderator (Water):</strong> Each container has a water moderator that slows down neutrons when they pass through.
+      As neutrons are moderated, the water heats up. Water is drawn in a color gradient from blue (cool) to red (hot), and turns gray if vaporized.
+      The moderation is a cumulative effect of many water molecules.
+    </p>
+    <p>
+      <strong>Reactivity Calculation:</strong> The effective fission probability is:
+      <br>
+      <code>p_fission = baseFissionProb × (1 – rodInsertion) × F(T) × (1 – xenon)</code>
+      <br>
+      with F(T):
+      <br>
+      – If T < voidThreshold: F(T) = 1 – (T / MAX_TEMP)
+      <br>
+      – If T ≥ voidThreshold: F(T) = 1 + ((T – voidThreshold) / (MAX_TEMP – voidThreshold))
+    </p>
+    <p>
+      <strong>Multiplication Factor (kₑff):</strong> The average effective reactivity across containers. kₑff > 1 means a supercritical core, kₑff ≃ 1 is critical, and kₑff < 1 is subcritical.
+    </p>
+    <p>
+      <strong>Scram, Refuel, and Cool:</strong> “Scram Reactor” instantly sets rod insertion to 100%; “Refuel Reactor” resets spent fuel (with some randomly spawned spent fuel);
+      “Cool Reactor” resets container temperatures and moderator temperature.
+    </p>
+    <h3>Simulation Details</h3>
+    <p>
+      <strong>Chain Reaction:</strong> An injected neutron may trigger fission in nearby fuel particles based on effective probability.
+      Every fission event increases container temperature, xenon, and also heats up the water moderator.
+    </p>
+    <p>
+      <strong>Live Graphs:</strong> One graph displays reactor capacity, cumulative heat, and average temperature.
+      A second graph displays average neutron speed over a 60‑second window.
+    </p>
+    <h3>Using This Simulation in Class</h3>
+    <p>
+      Use the buttons to inject neutrons, refuel, cool, scram, and reset the simulation.
+      Adjust the “Fuel Loading” slider to set the percentage of active fuel, and the “Control Rod Insertion” slider to adjust reactivity.
+      The status panel displays key metrics including kₑff.
+    </p>
+  </div>
+
+  <script>
+    /************** CONFIGURATION & GLOBAL CONSTANTS ****************/
+    const reactionConfig = {
+      "U235": {
+        neutrons: { minCount: 2, maxCount: 3, color: "#00BFFF" },
+        energy: { min: 80, max: 150 }  // Energy per fission event (arb. units)
+      }
+    };
+    const baseFissionProb = 0.8;       // Intrinsic fission probability.
+    const FRICTION = 0.995;            // Neutron friction.
+    const GRAPH_TIME_WINDOW = 60;      // Graph history in seconds.
+    const TEMP_DECAY = 0.995;          // Temperature decay per frame.
+    const MAX_TEMP = 1000;             // Maximum temperature (arb. units).
+    const voidThreshold = 800;         // Temperature threshold for void effect.
+    const xenonBuild = 0.03;           // Xenon buildup per fission.
+    const xenonDecay = 0.9995;         // Xenon decay factor per frame.
+    const coolantFlow = 1.05;          // Coolant flow multiplier.
+    
+    // New global: Fuel loading percentage (0 to 1).
+    let fuelLoading = 1.0;             // Default 100%.
+    
+    // New global: Moderator parameters.
+    // Each container will have a water moderator with its own temperature.
+    const initialWaterTemp = 20;       // Initial water moderator temperature.
+    const waterVaporThreshold = 300;   // When water temperature exceeds this, water becomes vapor (gray).
+    const waterTempDecay = 0.998;      // Water temperature decay per frame.
+    const waterModerationFactor = 0.99; // Each neutron inside moderator is slowed by this factor per frame.
+    const waterHeatingPerNeutron = 0.5;  // Amount of water temperature increase per moderated neutron.
+    
+    /************** SETUP CANVAS CONTEXTS ****************/
+    const simCanvas = document.getElementById('simulationCanvas');
+    const simCtx = simCanvas.getContext('2d');
+    const graphCanvas = document.getElementById('graphCanvas');
+    const graphCtx = graphCanvas.getContext('2d');
+    const graph2Canvas = document.getElementById('graph2Canvas');
+    const graph2Ctx = graph2Canvas.getContext('2d');
+
+    /************** GLOBAL VARIABLES ****************/
+    let fuelContainers = [];
+    let neutrons = [];
+    let energyBursts = [];
+    let fissionCount = 0;
+    let totalEnergyReleased = 0;
+    let totalFuelParticles = 0;
+    let fissionedFuelParticles = 0;
+    let graphData = [];         // For capacity, heat, temperature.
+    let neutronGraphData = [];  // For average neutron speed.
+    let startTime = performance.now();
+    let globalRodInsertion = 0; // 0 (none) to 1 (full).
+
+    /************** CLASS DEFINITIONS ****************/
+    class FuelParticle {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.isotope = "U235";
+        // Randomly spawn some fuel as spent.
+        const initialSpentFraction = 0.1; // 10% chance.
+        if (Math.random() < initialSpentFraction) {
+          this.triggered = true;
+          this.isotope = "Spent";
+          this.color = "#555";
+        } else {
+          this.triggered = false;
+          this.color = "#90EE90";
+        }
+        this.radius = 3;
+      }
+      triggerFission() {
+        if (this.triggered) return 0;
+        this.triggered = true;
+        this.isotope = "Spent";
+        this.color = "#555";
+        const config = reactionConfig["U235"];
+        let neutronCount = Math.floor(Math.random() * (config.neutrons.maxCount - config.neutrons.minCount + 1)) + config.neutrons.minCount;
+        for (let i = 0; i < neutronCount; i++) {
+          let angle = Math.random() * Math.PI * 2;
+          let speed = Math.random() * 3 + 1.5;
+          neutrons.push(new Neutron(this.x, this.y, angle, speed, config.neutrons.color));
+        }
+        let energyValue = Math.random() * (config.energy.max - config.energy.min) + config.energy.min;
+        totalEnergyReleased += energyValue;
+        fissionCount++;
+        fissionedFuelParticles++;
+        energyBursts.push(new EnergyBurst(this.x, this.y, energyValue, "#FFFAF0", energyValue));
+        return energyValue;
+      }
+      draw() {
+        simCtx.beginPath();
+        simCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        simCtx.fillStyle = this.color;
+        simCtx.fill();
+        simCtx.closePath();
+      }
+    }
+
+    class FuelContainer {
+      constructor(x, y, width, height, rows = 20, cols = 20) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.rows = rows;
+        this.cols = cols;
+        this.fuelParticles = [];
+        this.rodInsertion = globalRodInsertion;
+        this.temperature = 0;
+        this.xenon = 0;
+        // New: Water moderator temperature.
+        this.waterTemperature = initialWaterTemp;
+        this.populateFuel();
+      }
+      populateFuel() {
+        let spacingX = this.width / (this.cols + 1);
+        let spacingY = this.height / (this.rows + 1);
+        for (let r = 0; r < this.rows; r++) {
+          for (let c = 0; c < this.cols; c++) {
+            // Only fill cell with probability "fuelLoading".
+            if (Math.random() < fuelLoading) {
+              let fx = this.x + spacingX * (c + 1);
+              let fy = this.y + spacingY * (r + 1);
+              this.fuelParticles.push(new FuelParticle(fx, fy));
+              totalFuelParticles++;
+            }
+          }
+        }
+      }
+      addTemperature(val) {
+        this.temperature += val;
+        this.xenon = Math.min(this.xenon + xenonBuild, 1);
+      }
+      updateTemperature() {
+        this.temperature *= TEMP_DECAY * coolantFlow;
+        this.xenon *= xenonDecay;
+      }
+      // Update water moderator temperature based on neutrons passing through.
+      updateWaterModerator() {
+        // For each neutron inside container bounds, slow it further and heat water.
+        neutrons.forEach(n => {
+          if (n.x >= this.x && n.x <= this.x + this.width &&
+              n.y >= this.y && n.y <= this.y + this.height) {
+            n.vx *= waterModerationFactor;
+            n.vy *= waterModerationFactor;
+            this.waterTemperature += waterHeatingPerNeutron;
+          }
+        });
+        // Water temperature decays slowly.
+        this.waterTemperature *= waterTempDecay;
+      }
+      // Get water moderator color.
+      getWaterColor() {
+        if (this.waterTemperature < waterVaporThreshold) {
+          // Map water temperature: low = blue (240°), high = red (0°)
+          let frac = this.waterTemperature / waterVaporThreshold;
+          let hue = 240 - 240 * frac;
+          return `hsla(${hue}, 100%, 50%, 0.3)`;
+        } else {
+          return "#888"; // Vaporized water appears gray.
+        }
+      }
+      draw() {
+        // First, update water moderator.
+        this.updateWaterModerator();
+        // Draw water moderator background.
+        simCtx.fillStyle = this.getWaterColor();
+        simCtx.fillRect(this.x, this.y, this.width, this.height);
+        // Draw container border.
+        simCtx.strokeStyle = "#fff";
+        simCtx.strokeRect(this.x, this.y, this.width, this.height);
+        // Draw control rod.
+        if (this.rodInsertion > 0) {
+          simCtx.fillStyle = "#888";
+          let rodWidth = this.width * 0.2;
+          let rodX = this.x + this.width / 2 - rodWidth / 2;
+          let rodHeight = this.height * this.rodInsertion;
+          simCtx.fillRect(rodX, this.y, rodWidth, rodHeight);
+        }
+        // Draw fuel particles.
+        this.fuelParticles.forEach(fp => fp.draw());
+        // Display fuel container temperature and xenon.
+        simCtx.fillStyle = "#eee";
+        simCtx.font = "12px Arial";
+        simCtx.fillText(`T: ${Math.round(this.temperature)} Xe: ${this.xenon.toFixed(2)} W: ${Math.round(this.waterTemperature)}`, this.x + 5, this.y + 15);
+        this.updateTemperature();
+      }
+    }
+
+    class Neutron {
+      constructor(x, y, angle, speed, color) {
+        this.x = x;
+        this.y = y;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.radius = 4;
+        this.color = color;
+        this.mass = 1;
+      }
+      update() {
+        this.vx *= FRICTION;
+        this.vy *= FRICTION;
+        this.x += this.vx;
+        this.y += this.vy;
+      }
+      draw() {
+        simCtx.beginPath();
+        simCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        simCtx.fillStyle = this.color;
+        simCtx.fill();
+        simCtx.closePath();
+      }
+    }
+
+    class EnergyBurst {
+      constructor(x, y, maxRadius, color, energyValue) {
+        this.x = x;
+        this.y = y;
+        this.radius = 0;
+        this.maxRadius = maxRadius;
+        this.lineWidth = 3;
+        this.color = color;
+        this.energyValue = energyValue;
+      }
+      update() {
+        this.radius += 2;
+      }
+      draw() {
+        simCtx.beginPath();
+        simCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        simCtx.strokeStyle = this.color;
+        simCtx.lineWidth = this.lineWidth;
+        simCtx.stroke();
+        simCtx.closePath();
+      }
+      isDone() {
+        return this.radius > this.maxRadius;
+      }
+    }
+
+    /************** HELPER FUNCTIONS ****************/
+    function circlesCollide(x1, y1, r1, x2, y2, r2) {
+      let dx = x1 - x2, dy = y1 - y2;
+      return (dx * dx + dy * dy) <= (r1 + r2) * (r1 + r2);
+    }
+
+    // Compute effective fission probability.
+    function effectiveFissionProb(container) {
+      let F_T;
+      if (container.temperature < voidThreshold) {
+        F_T = 1 - (container.temperature / MAX_TEMP);
+      } else {
+        F_T = 1 + ((container.temperature - voidThreshold) / (MAX_TEMP - voidThreshold));
+      }
+      let xenonEffect = 1 - container.xenon;
+      let p = baseFissionProb * (1 - container.rodInsertion) * F_T * xenonEffect;
+      return Math.max(Math.min(p, 1), 0);
+    }
+
+    // Compute average effective multiplication factor (k_eff) across containers.
+    function computeKeff() {
+      let sum = 0;
+      fuelContainers.forEach(container => {
+        let p = effectiveFissionProb(container);
+        sum += p;
+      });
+      return fuelContainers.length > 0 ? (sum / fuelContainers.length) : 0;
+    }
+
+    function updateStats() {
+      let capacity = totalFuelParticles > 0 ? Math.round((fissionedFuelParticles / totalFuelParticles) * 100) : 0;
+      let avgTemp = 0;
+      fuelContainers.forEach(fc => { avgTemp += fc.temperature; });
+      avgTemp = fuelContainers.length > 0 ? Math.round(avgTemp / fuelContainers.length) : 0;
+      let avgXe = 0;
+      fuelContainers.forEach(fc => { avgXe += fc.xenon; });
+      avgXe = fuelContainers.length > 0 ? (avgXe / fuelContainers.length).toFixed(2) : 0;
+      let totalSpeed = 0;
+      neutrons.forEach(n => { totalSpeed += Math.sqrt(n.vx * n.vx + n.vy * n.vy); });
+      let avgSpeed = neutrons.length > 0 ? (totalSpeed / neutrons.length).toFixed(2) : 0;
+      let keff = computeKeff().toFixed(2);
+      document.getElementById('stats').textContent =
+        `Fission Count: ${fissionCount} | Total Energy: ${Math.round(totalEnergyReleased)} | Capacity: ${capacity}% | Avg. Temp: ${avgTemp} | Avg. Xenon: ${avgXe} | kₑff: ${keff} | Avg. Neutron Speed: ${avgSpeed}`;
+    }
+
+    function recordGraphData() {
+      let capacity = totalFuelParticles > 0 ? (fissionedFuelParticles / totalFuelParticles) * 100 : 0;
+      let timeSec = (performance.now() - startTime) / 1000;
+      let avgTemp = 0;
+      fuelContainers.forEach(fc => { avgTemp += fc.temperature; });
+      avgTemp = fuelContainers.length > 0 ? avgTemp / fuelContainers.length : 0;
+      graphData.push({ time: timeSec, capacity: capacity, heat: totalEnergyReleased, temperature: avgTemp });
+      let totalSpeed = 0;
+      neutrons.forEach(n => { totalSpeed += Math.sqrt(n.vx * n.vx + n.vy * n.vy); });
+      let avgSpeed = neutrons.length > 0 ? totalSpeed / neutrons.length : 0;
+      neutronGraphData.push({ time: timeSec, avgSpeed: avgSpeed });
+      while (graphData.length > 0 && (timeSec - graphData[0].time) > GRAPH_TIME_WINDOW) {
+        graphData.shift();
+      }
+      while (neutronGraphData.length > 0 && (timeSec - neutronGraphData[0].time) > GRAPH_TIME_WINDOW) {
+        neutronGraphData.shift();
+      }
+    }
+
+    /************** INITIALIZATION ****************/
+    function initializeReactor() {
+      fuelContainers = [];
+      totalFuelParticles = 0;
+      fissionedFuelParticles = 0;
+      let margin = 20;
+      let containerWidth = (simCanvas.width - margin * 3) / 2;
+      let containerHeight = (simCanvas.height - margin * 3) / 2;
+      for (let row = 0; row < 2; row++) {
+        for (let col = 0; col < 2; col++) {
+          let x = margin + col * (containerWidth + margin);
+          let y = margin + row * (containerHeight + margin);
+          fuelContainers.push(new FuelContainer(x, y, containerWidth, containerHeight));
+        }
+      }
+    }
+
+    /************** NEUTRON-FUEL INTERACTION ****************/
+    function processNeutronCollisions() {
+      fuelContainers.forEach(container => {
+        container.rodInsertion = globalRodInsertion;
+        container.fuelParticles.forEach(fp => {
+          if (!fp.triggered) {
+            neutrons.forEach((n, ni) => {
+              if (circlesCollide(n.x, n.y, n.radius, fp.x, fp.y, fp.radius)) {
+                let r = Math.random();
+                let p_absorb = container.rodInsertion * 0.3;
+                let p_fission = effectiveFissionProb(container);
+                if (r < p_absorb) {
+                  neutrons.splice(ni, 1);
+                  return;
+                } else if (r < p_absorb + p_fission) {
+                  n.vx *= (1 - container.rodInsertion * 0.3);
+                  n.vy *= (1 - container.rodInsertion * 0.3);
+                  let energy = fp.triggerFission();
+                  container.addTemperature(energy);
+                  neutrons.splice(ni, 1);
+                } else {
+                  n.vx *= (1 - container.rodInsertion * 0.1);
+                  n.vy *= (1 - container.rodInsertion * 0.1);
+                }
+              }
+            });
+          }
+        });
+      });
+    }
+
+    /************** ANIMATION & GRAPH UPDATE ****************/
+    function update() {
+      simCtx.clearRect(0, 0, simCanvas.width, simCanvas.height);
+      fuelContainers.forEach(fc => fc.draw());
+      for (let i = neutrons.length - 1; i >= 0; i--) {
+        neutrons[i].update();
+        neutrons[i].draw();
+      }
+      for (let i = energyBursts.length - 1; i >= 0; i--) {
+        energyBursts[i].update();
+        energyBursts[i].draw();
+        if (energyBursts[i].isDone()) {
+          energyBursts.splice(i, 1);
+        }
+      }
+      processNeutronCollisions();
+      updateStats();
+      recordGraphData();
+      drawGraph();
+      drawNeutronGraph();
+      requestAnimationFrame(update);
+    }
+
+    function drawGraph() {
+      graphCtx.clearRect(0, 0, graphCanvas.width, graphCanvas.height);
+      graphCtx.strokeStyle = "#888";
+      graphCtx.lineWidth = 1;
+      graphCtx.beginPath();
+      graphCtx.moveTo(40, graphCanvas.height - 30);
+      graphCtx.lineTo(graphCanvas.width - 10, graphCanvas.height - 30);
+      graphCtx.moveTo(40, graphCanvas.height - 30);
+      graphCtx.lineTo(40, 10);
+      graphCtx.stroke();
+      
+      let currentTime = graphData.length > 0 ? graphData[graphData.length - 1].time : 0;
+      let minTime = currentTime - GRAPH_TIME_WINDOW;
+      let maxCapacity = 100;
+      let maxHeat = Math.max(...graphData.map(d => d.heat), 100);
+      
+      // Reactor Capacity (green).
+      graphCtx.strokeStyle = "#ADFF2F";
+      graphCtx.lineWidth = 2;
+      graphCtx.beginPath();
+      graphData.forEach((d, idx) => {
+        let x = 40 + ((graphCanvas.width - 50) * ((d.time - minTime) / GRAPH_TIME_WINDOW));
+        let y = (graphCanvas.height - 30) - ((graphCanvas.height - 40) * (d.capacity / maxCapacity));
+        if (idx === 0) graphCtx.moveTo(x, y);
+        else graphCtx.lineTo(x, y);
+      });
+      graphCtx.stroke();
+      graphCtx.fillStyle = "#ADFF2F";
+      graphCtx.fillText("Capacity (%)", 50, 20);
+      
+      // Total Heat (red).
+      graphCtx.strokeStyle = "#FF4500";
+      graphCtx.beginPath();
+      graphData.forEach((d, idx) => {
+        let x = 40 + ((graphCanvas.width - 50) * ((d.time - minTime) / GRAPH_TIME_WINDOW));
+        let y = (graphCanvas.height - 30) - ((graphCanvas.height - 40) * (d.heat / maxHeat));
+        if (idx === 0) graphCtx.moveTo(x, y);
+        else graphCtx.lineTo(x, y);
+      });
+      graphCtx.stroke();
+      graphCtx.fillStyle = "#FF4500";
+      graphCtx.fillText("Total Heat", graphCanvas.width - 200, 20);
+      
+      // Average Temperature (blue).
+      graphCtx.strokeStyle = "#00BFFF";
+      graphCtx.beginPath();
+      graphData.forEach((d, idx) => {
+        let x = 40 + ((graphCanvas.width - 50) * ((d.time - minTime) / GRAPH_TIME_WINDOW));
+        let y = (graphCanvas.height - 30) - ((graphCanvas.height - 40) * (d.temperature / MAX_TEMP));
+        if (idx === 0) graphCtx.moveTo(x, y);
+        else graphCtx.lineTo(x, y);
+      });
+      graphCtx.stroke();
+      graphCtx.fillStyle = "#00BFFF";
+      graphCtx.fillText("Avg. Temp", graphCanvas.width - 200, 40);
+      
+      // Display k_eff.
+      let keff = computeKeff().toFixed(2);
+      graphCtx.fillStyle = "#eee";
+      graphCtx.font = "12px Arial";
+      graphCtx.fillText(`k_eff: ${keff}`, 60, 60);
+      
+      graphCtx.fillStyle = "#eee";
+      graphCtx.font = "12px Arial";
+      graphCtx.fillText("Time (s)", graphCanvas.width / 2 - 20, graphCanvas.height - 5);
+    }
+
+    function drawNeutronGraph() {
+      graph2Ctx.clearRect(0, 0, graph2Canvas.width, graph2Canvas.height);
+      graph2Ctx.strokeStyle = "#888";
+      graph2Ctx.lineWidth = 1;
+      graph2Ctx.beginPath();
+      graph2Ctx.moveTo(40, graph2Canvas.height - 30);
+      graph2Ctx.lineTo(graph2Canvas.width - 10, graph2Canvas.height - 30);
+      graph2Ctx.moveTo(40, graph2Canvas.height - 30);
+      graph2Ctx.lineTo(40, 10);
+      graph2Ctx.stroke();
+      
+      let currentTime = neutronGraphData.length > 0 ? neutronGraphData[neutronGraphData.length - 1].time : 0;
+      let minTime = currentTime - GRAPH_TIME_WINDOW;
+      let maxSpeed = Math.max(...neutronGraphData.map(d => d.avgSpeed), 5);
+      
+      graph2Ctx.strokeStyle = "#FFA500";
+      graph2Ctx.lineWidth = 2;
+      graph2Ctx.beginPath();
+      neutronGraphData.forEach((d, idx) => {
+        let x = 40 + ((graph2Canvas.width - 50) * ((d.time - minTime) / GRAPH_TIME_WINDOW));
+        let y = (graph2Canvas.height - 30) - ((graph2Canvas.height - 40) * (d.avgSpeed / maxSpeed));
+        if (idx === 0) graph2Ctx.moveTo(x, y);
+        else graph2Ctx.lineTo(x, y);
+      });
+      graph2Ctx.stroke();
+      graph2Ctx.fillStyle = "#FFA500";
+      graph2Ctx.fillText("Avg. Neutron Speed", graph2Canvas.width - 200, 20);
+      
+      graph2Ctx.fillStyle = "#eee";
+      graph2Ctx.font = "12px Arial";
+      graph2Ctx.fillText("Time (s)", graph2Canvas.width / 2 - 20, graph2Canvas.height - 5);
+    }
+
+    /************** EVENT HANDLERS ****************/
+    document.getElementById('injectNeutron').addEventListener('click', () => {
+      if (fuelContainers.length === 0) return;
+      let target = fuelContainers[Math.floor(Math.random() * fuelContainers.length)];
+      let x = target.x + target.width / 2;
+      let y = target.y + target.height / 2;
+      let angle = Math.random() * Math.PI * 2;
+      let speed = Math.random() * 3 + 1.5;
+      neutrons.push(new Neutron(x, y, angle, speed, reactionConfig["U235"].neutrons.color));
+    });
+    document.getElementById('refuelReactor').addEventListener('click', () => {
+      fuelContainers.forEach(container => {
+        container.fuelParticles.forEach(fp => {
+          fp.triggered = false;
+          fp.isotope = "U235";
+          fp.color = "#90EE90";
+        });
+      });
+      fissionedFuelParticles = 0;
+      updateStats();
+      neutrons = [];
+      energyBursts = [];
+    });
+    document.getElementById('coolReactor').addEventListener('click', () => {
+      fuelContainers.forEach(container => { 
+        container.temperature = 0; 
+        container.waterTemperature = initialWaterTemp;
+      });
+      updateStats();
+    });
+    document.getElementById('scramReactor').addEventListener('click', () => {
+      globalRodInsertion = 1;
+      document.getElementById('rodSlider').value = 100;
+      document.getElementById('rodLabel').textContent = "Control Rod Insertion: 100%";
+    });
+    document.getElementById('rodSlider').addEventListener('input', (e) => {
+      let value = parseInt(e.target.value, 10);
+      globalRodInsertion = value / 100;
+      document.getElementById('rodLabel').textContent = `Control Rod Insertion: ${value}%`;
+    });
+    document.getElementById('fuelSlider').addEventListener('input', (e) => {
+      let value = parseInt(e.target.value, 10);
+      fuelLoading = value / 100;
+      document.getElementById('fuelLabel').textContent = `Fuel Loading: ${value}%`;
+    });
+    document.getElementById('resetSim').addEventListener('click', () => {
+      fuelContainers = [];
+      neutrons = [];
+      energyBursts = [];
+      graphData = [];
+      neutronGraphData = [];
+      fissionCount = 0;
+      totalEnergyReleased = 0;
+      totalFuelParticles = 0;
+      fissionedFuelParticles = 0;
+      startTime = performance.now();
+      initializeReactor();
+    });
+
+    /************** START SIMULATION ****************/
+    initializeReactor();
+    update();
+  </script>
+</body>
+</html>
