@@ -1,16 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Ball Collision Simulation</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crucible — Collision Simulation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
-        #simulationCanvas {
-            border: 1px solid #000000;
+        body {
+            margin: 0;
+            background: #0a0808;
+            color: #e8dccb;
+            font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+            overflow: hidden;
         }
+        #simulationCanvas { display: block; width: 100vw; height: 100vh; touch-action: none; }
+        .temper {
+            position: fixed;
+            top: 14px;
+            left: 14px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 14px;
+            max-width: calc(100vw - 28px);
+            padding: 10px 16px;
+            background: rgba(18, 14, 13, 0.85);
+            border: 1px solid #3a302b;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+        .temper label { display: flex; align-items: center; gap: 8px; }
+        .temper input[type=range] { accent-color: #ff6a2b; width: 110px; }
+        .temper button {
+            font: 600 14px 'Rajdhani', sans-serif;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #0c0a0a;
+            background: #ffb347;
+            border: 0;
+            padding: 5px 12px;
+            cursor: pointer;
+        }
+        .hint { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); color: #8d8378; letter-spacing: 0.15em; text-transform: uppercase; font-size: 13px; pointer-events: none; white-space: nowrap; }
     </style>
 </head>
 <body>
-    <canvas id="simulationCanvas" width="800" height="600"></canvas>
+    <canvas id="simulationCanvas"></canvas>
+    <div class="temper">
+        <label>Restitution <input type="range" id="restitution" min="0" max="1" step="0.05" value="0.6"> <span id="eVal">0.60</span></label>
+        <label>Gravity <input type="range" id="gravity" min="0" max="2000" step="50" value="900"></label>
+        <button id="pour">Pour ingots</button>
+        <button id="reset">Empty</button>
+    </div>
+    <p class="hint">Click or drag to drop ingots · hot ingots cool as they rest</p>
 
-    <script type="text/javascript" src="simulation.js"></script>
+    <script src="simulation.js"></script>
+    <script src="../forge/lab-frame.js" data-id="collision" defer></script>
 </body>
 </html>

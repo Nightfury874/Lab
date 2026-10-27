@@ -3,292 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nihar’s Lab</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <!-- Link the external CSS file -->
-    <link rel="stylesheet" href="styles/styles.css">
-    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script> <!-- Lottie player -->
-    <style>
-        /* Existing Styles */
-
-        /* Additional CSS for the Scroll Arrow */
-        .scroll-arrow {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            background-color: #555; /* Dark gray background */
-            color: #fff; /* White arrow */
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            opacity: 0.7;
-            transition: opacity 0.3s, background-color 0.3s;
-            z-index: 1000; /* Ensure it stays on top */
-            /* Ensure the arrow is focusable for accessibility */
-            outline: none;
-        }
-
-        .scroll-arrow:hover {
-            opacity: 1;
-            background-color: #333; /* Darker background on hover */
-        }
-
-        /* Arrow Icon (Using CSS) */
-        .scroll-arrow::after {
-            content: '↓'; /* Down arrow symbol */
-            font-size: 20px;
-        }
-
-        /* Pulse Animation Keyframes */
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
-            }
-            70% {
-                transform: scale(1.1);
-                box-shadow: 0 0 10px 10px rgba(255, 255, 255, 0);
-            }
-            100% {
-                transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
-            }
-        }
-
-        /* Pulse Animation Class */
-        .pulse {
-            animation: pulse 1.5s infinite;
-        }
-    </style>
+    <title>Tenebris Drakonos Forge — Nihar's Lab</title>
+    <meta name="description" content="Nihar Basisth's forge: physics simulations, dev tools and small experiments, guarded by a dragon called Nightfury.">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Tenebris Drakonos Forge">
+    <meta property="og:description" content="Simulations and dev tools by Nihar Basisth. A reactor, a wind tunnel, a double pendulum and a dragon.">
+    <meta property="og:url" content="https://nightfury874.github.io/Lab/">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@NiharBasisth">
+    <meta name="theme-color" content="#0a0808">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 26 18 16 30 6 18Z' fill='%23ff6a2b'/%3E%3Cpath d='M16 12 21 20 16 27 11 20Z' fill='%23fff4d6'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Loaded without blocking, so the forge's scripts never wait on the font server. -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="forge/forge.css">
 </head>
-<body>
+<body class="intro">
+    <canvas id="back" aria-hidden="true"></canvas>
+    <canvas id="front" aria-hidden="true"></canvas>
+    <div id="torch" aria-hidden="true"></div>
+    <img id="sign" src="image/SVGDark2.svg" alt="Out of order">
 
-    <!-- Existing Content -->
-
-    <!-- Dark Mode Toggle Switch -->
-    <div class="toggle-container">
-        <label class="switch">
-            <input type="checkbox" id="mode-toggle">
-            <span class="slider round"></span>
-        </label>
-        <span class="mode-label">Dark Mode</span>
+    <div class="controls">
+        <button class="tag" id="lights" aria-pressed="false">Lights out</button>
+        <button class="tag" id="sound" aria-pressed="false">Sound off</button>
     </div>
 
-    <!-- "Out of Order" SVG Below the Toggle -->
-    <div class="out-of-order-container">
-        <!-- <img src="image/SVGLight.svg" alt="Light" class="out-of-order out-of-order-light"> -->
-        <img src="image/SVGDark2.svg" alt="dark" class="out-of-order out-of-order-dark hidden">
-    </div>
+    <main id="main">
+        <section id="hero">
+            <h1 id="title" aria-label="Tenebris Drakonos Forge">
+                <span class="word latin" data-en="Shadow">Tenebris</span>
+                <span class="word latin" data-en="Dragon">Drakonos</span>
+                <span class="word">Forge</span>
+            </h1>
+            <p class="motto">Things I built because I wanted to see them move.</p>
 
-    <!-- Torchlight Effect Elements (Initially Hidden) -->
-    <div id="darkness" class="darkness hidden">
-        <div id="light" class="light">
-            <span class="shadow"></span>
-        </div>
-    </div>
+            <div class="hearth-wrap">
+                <svg id="hearth" viewBox="0 0 400 280" role="img" aria-label="The forge's hearth">
+                    <!-- hood -->
+                    <polygon points="150,0 200,0 200,70 100,70" fill="#1e1a19"/>
+                    <polygon points="200,0 250,0 300,70 200,70" fill="#262120"/>
+                    <polygon points="88,70 312,70 304,92 96,92" fill="#2f2928"/>
+                    <!-- left column -->
+                    <polygon points="60,92 110,92 110,150" fill="#2a2524"/>
+                    <polygon points="60,92 110,150 52,170" fill="#221e1d"/>
+                    <polygon points="52,170 110,150 110,250" fill="#2d2827"/>
+                    <polygon points="52,170 110,250 44,250" fill="#1f1b1a"/>
+                    <polygon points="44,250 110,250 130,280 40,280" fill="#262120"/>
+                    <!-- right column -->
+                    <polygon points="340,92 290,92 290,150" fill="#241f1e"/>
+                    <polygon points="340,92 290,150 348,170" fill="#2c2726"/>
+                    <polygon points="348,170 290,150 290,250" fill="#201c1b"/>
+                    <polygon points="348,170 290,250 356,250" fill="#2a2524"/>
+                    <polygon points="356,250 290,250 270,280 360,280" fill="#1f1b1a"/>
+                    <!-- lintel -->
+                    <polygon points="110,92 200,92 130,120 110,150" fill="#2f2928"/>
+                    <polygon points="200,92 290,92 290,150 270,120" fill="#272221"/>
+                    <polygon points="130,120 200,92 270,120" fill="#36302e"/>
+                    <!-- sill, lit by the fire -->
+                    <polygon class="lit" points="110,250 290,250 270,280 130,280" fill="#3a2119"/>
+                    <!-- markers read by the script: the fire's mouth and the chimney flue -->
+                    <rect id="mouth" x="110" y="120" width="180" height="130" fill="none"/>
+                    <rect id="flue" x="150" y="0" width="100" height="4" fill="none"/>
+                </svg>
 
-    <div class="background-animation">
-        <div class="floating-binary">01001010</div>
-        <div class="floating-binary">10101100</div>
-        <div class="floating-binary">11001101</div>
-    </div>
+                <button id="anvil" aria-label="Anvil. Forged by Nihar Basisth. Click to strike.">
+                    <svg viewBox="0 0 220 120" aria-hidden="true">
+                        <polygon points="8,26 64,16 70,30 60,42" fill="#2f343e"/>
+                        <polygon points="64,16 206,16 200,30 70,30" fill="#3a3f4a"/>
+                        <polygon points="70,30 200,30 196,54 78,54" fill="#262a33"/>
+                        <polygon points="100,54 176,54 166,84 110,84" fill="#1f232b"/>
+                        <polygon points="86,84 190,84 204,112 72,112" fill="#2a2e37"/>
+                        <polygon points="86,84 110,84 98,112 72,112" fill="#22262e"/>
+                        <text class="sig" x="135" y="46" text-anchor="middle">FORGED BY NIHAR BASISTH</text>
+                    </svg>
+                </button>
+                <p class="anvil-line">Engineer, founder, product person — still building things that move.</p>
+            </div>
 
-    <h1>
-        <span class="tooltip" data-tooltip="[Latin, t&egrave;nɪbr&aelig;s] Adjective, literary: dark; shadowy or obscure.">Tenebris</span>
-        <span class="tooltip" data-tooltip="[Latin, dr&aelig;&apos;kɒn&aelig;s] Noun, literary: dragon">Drakonos</span>
-        Forge
-    </h1>
-    
-    <p>The only limitation is your imagination</p>
+            <a class="descend" href="#workshop">Descend</a>
+        </section>
 
-    <!-- Lottie animation in the center with controlled size -->
-    <div class="lottie-container">
-        <lottie-player src="https://lottie.host/27f84bc0-2419-498d-9204-6b0b814729c1/XsAf5H8AZd.json" background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></lottie-player>
-    </div>
+        <section id="workshop">
+            <h2>The Workshop</h2>
+            <p class="sub">Hover to heat. Linger to read. Click to strike.</p>
+            <div class="plates" id="plates"></div>
+            <div class="banner" id="banner" hidden></div>
 
-    <!-- Tiles Section -->
-    <div class="tiles-container">
-        <!-- Existing Tiles -->
-        <div class="tile">
-            <a href="RockPaperScissor/index.html" class="tile__inner tooltip-icon" data-tooltips="Try it out now">
-                <img src="icons/RPSIcon.svg" alt="Rock Paper Scissors Simulator" class="tile__icon"/>
-            </a>
-        </div>
-        <div class="tile">
-            <a href="#" class="tile__inner tooltip-icon" data-tooltips="Coming soon...">
-                <img src="icons/CollisionIcon.svg" alt="Collision Simulator" class="tile__icon"/>
-            </a>
-        </div>
-        <div class="tile">
-            <a href="WindTunnel/index.html" class="tile__inner tooltip-icon" data-tooltips="Try it out now">
-                <img src="icons/WindTunnelIcon.svg" alt="Euler's Fluid Mechanics Simulator" class="tile__icon"/>
-            </a>
-        </div>
-        <div class="tile">
-            <a href="JSONViewer/index.html" class="tile__inner tooltip-icon" data-tooltips="Try it out now">
-                <img src="icons/json.svg" alt="JSON Viewer" class="tile__icon"/>
-            </a>
-        </div>
-        <div class="tile">
-            <a href="https://nightfury874.github.io/QueensByLinkedinReplay/" class="tile__inner tooltip-icon" data-tooltips="Try it out now">
-                <img src="icons/Queens.svg" alt="Queens By Linkedin Replay" class="tile__icon"/>
-            </a>
-        </div>
-        <div class="tile">
-            <a href="https://nightfury874.github.io/MindfulBreathing/" class="tile__inner tooltip-icon" data-tooltips="Try it out now">
-                <img src="icons/Mindful breathing.svg" alt="Mindful Breathing" class="tile__icon"/>
-            </a>
-        </div>
+            <h3 class="shelf-title">The Trinket Shelf</h3>
+            <div class="trinkets" id="trinkets"></div>
+            <div class="shelf" aria-hidden="true"></div>
+        </section>
 
-        <div class="tile">
-            <a href="https://github.com/marketplace/actions/generate-cloc-badge" class="tile__inner tooltip-icon" data-tooltips="Get it now">
-                <img src="icons/CLOC.svg" alt="CLOC Badge Generator" class="tile__icon"/>
-            </a>
-        </div>
-        <div class="tile">
-            <a href="https://nightfury874.github.io/DictionaryLol/" class="tile__inner tooltip-icon" data-tooltips="Get it now">
-                <img src="icons/Dict.svg" alt="Dictionary Lol" class="tile__icon"/>
-            </a>
-        </div>
-        <div class="tile">
-            <a href="https://nightfury874.github.io/EdgeBookmark/" class="tile__inner tooltip-icon" data-tooltips="Get it now">
-                <img src="icons/Bookmark.svg" alt="Edge Bookmark" class="tile__icon"/>
-            </a>
-        </div>
-        <div class="tile">
-            <a href="https://nightfury874.github.io/WebStickyNote/" class="tile__inner tooltip-icon" data-tooltips="Get it now">
-                <img src="icons/Sticky notes.svg" alt="Web Sticky Note" class="tile__icon"/>
-            </a>
-        </div>
-    </div>
+        <section id="cellar">
+            <h2>The Cellar</h2>
+            <p class="sub">The smith's path, stamped in metal.</p>
+            <div class="ingots" id="ingots"></div>
+            <div class="chains" id="chains"></div>
+        </section>
 
-    <a href="#" class="more-link">and more coming soon...</a>
+        <section id="vault">
+            <h2>The Vault</h2>
+            <div class="door-wrap" id="door">
+                <svg viewBox="0 0 300 360" aria-hidden="true">
+                    <defs>
+                        <clipPath id="doorway"><rect x="40" y="40" width="220" height="300"/></clipPath>
+                        <radialGradient id="vault-glow" cx="50%" cy="60%" r="60%">
+                            <stop offset="0" stop-color="#ff6a2b" stop-opacity="0.35"/>
+                            <stop offset="1" stop-color="#000" stop-opacity="0"/>
+                        </radialGradient>
+                    </defs>
+                    <polygon points="20,20 280,20 296,360 4,360" fill="#1b1716"/>
+                    <polygon points="20,20 150,20 40,40" fill="#241f1e"/>
+                    <polygon points="150,20 280,20 260,40" fill="#211c1b"/>
+                    <rect x="40" y="40" width="220" height="300" fill="#060404"/>
+                    <rect x="40" y="40" width="220" height="300" fill="url(#vault-glow)"/>
+                    <g clip-path="url(#doorway)">
+                        <g class="leaf">
+                            <polygon points="40,40 260,40 260,340 40,340" fill="#2a2e37"/>
+                            <polygon points="40,40 150,40 150,190 40,190" fill="#323743"/>
+                            <polygon points="150,190 260,190 260,340 150,340" fill="#22262e"/>
+                            <polygon points="150,150 185,170 185,210 150,230 115,210 115,170" fill="#14161b"/>
+                            <polygon points="150,168 168,178 168,202 150,212 132,202 132,178" fill="#ff6a2b" opacity="0.8"/>
+                            <g fill="#454b58">
+                                <circle cx="56" cy="56" r="4"/><circle cx="244" cy="56" r="4"/>
+                                <circle cx="56" cy="324" r="4"/><circle cx="244" cy="324" r="4"/>
+                                <circle cx="56" cy="190" r="4"/><circle cx="244" cy="190" r="4"/>
+                            </g>
+                        </g>
+                    </g>
+                </svg>
+            </div>
+            <div class="riddle">
+                <p>Shadow and dragon both keep this door.<br>Speak the name of the one who sleeps by the fire.</p>
+                <form id="riddle">
+                    <label class="sr-only" for="answer">Your answer</label>
+                    <input id="answer" autocomplete="off" spellcheck="false" placeholder="speak…">
+                    <button class="tag" type="submit">Speak</button>
+                </form>
+            </div>
+            <div class="scrap" id="scrap" hidden></div>
+            <div class="tally" id="tally"></div>
+        </section>
+    </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <p>Connect with me</p>
-        <div class="social-links">
-            <a href="https://www.linkedin.com/in/nihar874/" target="_blank">
-                <img src="icons/linkedin.svg" alt="LinkedIn" class="social-icon">
-            </a>
-            <a href="https://x.com/NiharBasisth" target="_blank">
-                <img src="icons/twitter.svg" alt="Twitter" class="social-icon">
-            </a>
-            <a href="https://github.com/Nightfury874" target="_blank">
-                <img src="icons/github.svg" alt="GitHub" class="social-icon">
-            </a>
-        </div>
-    </footer>
+    <noscript>
+        <ul>
+            <li><a href="nuclear.html">RBMK Reactor</a></li>
+            <li><a href="Pendulum/index.html">Double Pendulum</a></li>
+            <li><a href="JSONViewer/index.html">JSON Ledger</a></li>
+            <li><a href="WindTunnel/index.html">Wind Tunnel</a></li>
+            <li><a href="RockPaperScissor/index.html">Rock Paper Scissors Lizard Spock</a></li>
+            <li><a href="Collision/index.html">Crucible</a></li>
+        </ul>
+    </noscript>
 
-    <!-- Scroll to Bottom Arrow -->
-    <div class="scroll-arrow" id="scroll-to-bottom" title="Scroll to Bottom" tabindex="0"></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-    <!-- JavaScript for Dark Mode, Torchlight Effect, and Scroll Arrow -->
-    <script>
-        // Dark Mode Toggle
-        const toggleSwitch = document.getElementById('mode-toggle');
-        const darkness = document.getElementById('darkness');
-        const light = document.getElementById('light');
-
-        // const outOfOrderLight = document.querySelector('.out-of-order-light');
-        const outOfOrderDark = document.querySelector('.out-of-order-dark');
-
-        toggleSwitch.addEventListener('change', function() {
-            if (this.checked) {
-                document.body.classList.add('dark-mode');
-                darkness.classList.remove('hidden');
-                // outOfOrderLight.classList.add('hidden');
-                outOfOrderDark.classList.remove('hidden');
-            } else {
-                document.body.classList.remove('dark-mode');
-                darkness.classList.add('hidden');
-                // outOfOrderLight.classList.remove('hidden');
-                outOfOrderDark.classList.add('hidden');
-            }
-        });
-
-        // Torchlight Effect
-        function updateTorch(e) {
-            let x, y;
-            if (e.type === 'touchmove') {
-                x = e.touches[0].clientX - 150;
-                y = e.touches[0].clientY - 150;
-            } else {
-                x = e.clientX - 150;
-                y = e.clientY - 150;
-            }
-
-            light.style.left = x + "px";
-            light.style.top = y + "px";
-        }
-
-        document.addEventListener('mousemove', function(e) {
-            if (document.body.classList.contains('dark-mode')) {
-                updateTorch(e);
-            }
-        });
-
-        document.addEventListener('touchmove', function(e) {
-            if (document.body.classList.contains('dark-mode')) {
-                updateTorch(e);
-            }
-        });
-
-        // Scroll to Bottom Functionality
-        const scrollToBottomBtn = document.getElementById('scroll-to-bottom');
-
-        scrollToBottomBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            window.scrollTo({
-                top: document.body.scrollHeight,
-                behavior: 'smooth'
-            });
-        });
-
-        // Pulse Animation Control
-        const scrollArrow = document.getElementById('scroll-to-bottom');
-
-        // Function to add the pulse class
-        function triggerPulse() {
-            scrollArrow.classList.add('pulse');
-            // Remove the pulse class after the animation duration to allow retriggering
-            setTimeout(() => {
-                scrollArrow.classList.remove('pulse');
-            }, 1500); // Duration matches the animation duration (1.5s)
-        }
-
-        // Trigger pulse on page load for the first 3 seconds
-        window.addEventListener('load', () => {
-            triggerPulse();
-            // Continue pulsing for the first 3 seconds
-            const initialPulseInterval = setInterval(() => {
-                triggerPulse();
-            }, 1500); // Every 1.5 seconds
-
-            // Stop the initial pulsing after 3 seconds
-            setTimeout(() => {
-                clearInterval(initialPulseInterval);
-            }, 3000);
-        });
-
-        // Trigger pulse when the user stops hovering over the arrow
-        scrollArrow.addEventListener('mouseleave', () => {
-            // Add a slight delay to ensure the mouse has fully left
-            setTimeout(() => {
-                triggerPulse();
-            }, 100);
-        });
-
-        // Optional: Trigger pulse when the arrow gains focus via keyboard
-        scrollArrow.addEventListener('focus', () => {
-            triggerPulse();
-        });
-    </script>
-
+    <script src="forge/manifest.js"></script>
+    <script src="forge/fluid.js"></script>
+    <script src="forge/previews.js"></script>
+    <script src="forge/dragon.js"></script>
+    <script src="forge/audio.js"></script>
+    <script src="forge/main.js"></script>
 </body>
 </html>

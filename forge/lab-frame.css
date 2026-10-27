@@ -1,0 +1,96 @@
+/* The lab frame — shared chrome around every experiment. Everything is prefixed lf- so it can't clash. */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Rajdhani:wght@500;600;700&display=swap');
+
+.lf-home {
+    position: fixed;
+    right: 14px;
+    bottom: 14px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px 6px 14px;
+    font: 600 14px 'Rajdhani', 'Segoe UI', sans-serif;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #e8dccb;
+    text-decoration: none;
+    background: rgba(12, 9, 8, 0.85);
+    border: 1px solid #3a302b;
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+}
+.lf-gem {
+    width: 14px;
+    height: 18px;
+    background: linear-gradient(180deg, #fff4d6, #ffb347 40%, #ff6a2b);
+    clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+    animation: lf-glow 1.6s ease-in-out infinite;
+}
+.lf-txt { max-width: 0; overflow: hidden; white-space: nowrap; transition: max-width 0.4s; }
+.lf-home:hover .lf-txt, .lf-home:focus-visible .lf-txt { max-width: 220px; }
+.lf-home:hover, .lf-home:focus-visible { color: #ffb347; outline: none; }
+@keyframes lf-glow { 0%, 100% { filter: drop-shadow(0 0 2px #ff6a2b); } 50% { filter: drop-shadow(0 0 8px #ff6a2b); } }
+
+.lf-notes {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    z-index: 9998;
+    display: flex;
+    align-items: flex-start;
+    transform: translate(calc(100% - 38px), -50%);
+    transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+    font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+}
+.lf-notes:hover, .lf-notes.open, .lf-notes:focus-within { transform: translate(0, -50%); }
+.lf-tab {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    width: 38px;
+    padding: 16px 8px;
+    border: 0;
+    font: 600 14px 'Rajdhani', 'Segoe UI', sans-serif;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #1a120c;
+    background: #d9c6a2;
+    cursor: pointer;
+    clip-path: polygon(0 0, 100% 8px, 100% calc(100% - 8px), 0 100%);
+}
+.lf-home, .lf-notes, .lf-notes *, .lf-peek { box-sizing: border-box; }
+.lf-sheet {
+    width: min(360px, 82vw);
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 22px 24px;
+    color: #2a1d12;
+    background: linear-gradient(160deg, #eadbbd, #d9c6a2 60%, #c4a97c);
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 6% 100%, 0 96%, 3% 60%, 0 30%);
+    font-size: 16px;
+    line-height: 1.45;
+}
+.lf-sheet h2 { margin: 0 0 10px; font-size: 22px; letter-spacing: 0.1em; text-transform: uppercase; }
+.lf-eq { margin: 12px 0; padding: 10px 12px; font: 14px 'JetBrains Mono', Consolas, monospace; background: rgba(60, 35, 15, 0.12); }
+.lf-src { color: #9a3a0e; font-weight: 600; }
+
+.lf-peek {
+    position: fixed;
+    left: 6px;
+    bottom: 0;
+    z-index: 9997;
+    width: 110px;
+    pointer-events: none;
+    transform: translateY(105%);
+    transition: transform 0.7s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+.lf-peek.up { transform: translateY(8%); }
+.lf-peek svg { display: block; width: 100%; height: auto; }
+.lf-eye { animation: lf-blink 3s infinite; transform-origin: 80px 40px; }
+@keyframes lf-blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+
+@media (prefers-reduced-motion: reduce) {
+    .lf-gem, .lf-eye { animation: none; }
+    .lf-peek { display: none; }
+}
