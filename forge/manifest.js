@@ -10,14 +10,14 @@ window.FORGE = {
         {
             id: 'reactor',
             name: 'RBMK Reactor',
-            hook: 'Pull the control rods and watch a chain reaction run away from you.',
+            hook: 'Run a Chernobyl-type reactor — then live through 01:23:40 on 26 April 1986.',
             path: 'nuclear.html',
             kind: 'Simulation',
             added: '2025-02-10',
             notes: {
-                idea: 'A neutron-by-neutron model of an RBMK core: four fuel channels, boron control rods, water moderator, xenon poisoning and the positive void coefficient that made the design dangerous.',
-                equation: 'p_fission = p_base × (1 − rods) × F(T) × (1 − xenon)',
-                how: 'Every neutron is a particle. Fission spawns new ones, heat feeds back into reactivity, and k_eff is measured live from generation to generation.'
+                idea: 'A side-on slice through an RBMK-1000 core: graphite, boiling water channels, boron rods with graphite displacers, xenon and a hot graphite stack. The positive void coefficient, the xenon pit and the graphite-tip effect of AZ-5 are not scripted — they come out of the physics.',
+                equation: '−∇·Dg∇φg + Σr,g φg = (1/k) χg Σ νΣf φ + Σ scatter-in',
+                how: 'Two-group neutron diffusion is solved on the grid every frame for the flux shape and k-effective. Point kinetics with delayed neutrons carries the power level, a channel-by-channel boiling model feeds voids and fuel temperature back in, and Monte Carlo neutrons fly through the same materials so you can watch them.'
             }
         },
         {

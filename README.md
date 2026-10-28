@@ -8,7 +8,7 @@ Nihar Basisth's lab: physics simulations, dev tools and small experiments, kept 
 
 | Experiment | What it is | Path |
 | --- | --- | --- |
-| RBMK Reactor | Neutron-level chain reaction with control rods, xenon poisoning and the void coefficient | [`nuclear.html`](nuclear.html) |
+| RBMK Reactor | An RBMK-1000 core you can run: two-group diffusion, point kinetics, boiling, xenon, graphite-tipped rods — and 26 April 1986 | [`nuclear.html`](nuclear.html) |
 | Double Pendulum | Chaos from two hinges, integrated with RK4 | [`Pendulum/`](Pendulum/) |
 | JSON Ledger | JSON viewer, editor and diff checker | [`JSONViewer/`](JSONViewer/) |
 | Wind Tunnel | Incompressible Euler fluid on a staggered grid; draw your own obstacles | [`WindTunnel/`](WindTunnel/) |

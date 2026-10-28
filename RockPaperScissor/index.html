@@ -1,165 +1,81 @@
-<!-- File: index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rock-Paper-Scissors Simulation</title>
-    <style>
-        /* Styles for the landing page and simulation */
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f0f0;
-        }
-        #landingPage, #simulationContainer {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-        #landingPage {
-            background: linear-gradient(135deg, #ece9e6, #ffffff);
-            text-align: center;
-        }
-        #landingPage h1 {
-            font-size: 3em;
-            color: #333;
-            margin-bottom: 20px;
-        }
-        #landingPage p {
-            font-size: 1.2em;
-            color: #666;
-            margin-bottom: 40px;
-        }
-        #enterBtn {
-            padding: 15px 30px;
-            font-size: 1em;
-            background-color: #008CBA;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        #enterBtn:hover {
-            background-color: #005f7f;
-        }
-        #simulationContainer {
-            background-color: #f9f9f9;
-}
-        #simulationCanvas {
-            margin-top: 2%;
-            border: 1px solid #ccc;
-            background-color: #ffffff;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            overflow: auto ;
-        }
-        #controls {
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            overflow-y:scroll ;
-            align-items: center;
-        }
-        #entityInputs, #durationInput, #winner {
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        label {
-            margin-right: 10px;
-            font-weight: bold;
-            color: #333;
-        }
-        input[type="number"] {
-            width: 60px;
-            margin-right: 20px;
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
-        button {
-            padding: 10px 20px;
-            margin: 5px;
-            font-size: 1em;
-            background-color: #008CBA;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #005f7f;
-        }
-        #winner {
-            font-size: 1.1em;
-            color: #333;
-        }
-        #winner {
-            font-weight: bold;
-            margin-top: 20px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a0808">
+  <meta name="description" content="Five clans. Ten laws. No lasting king. An interactive ecosystem of pursuit, conversion and beautiful chaos in Nihar’s forge.">
+  <title>Five Clans — The Forge</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 30 16 16 30 2 16Z' fill='%23ff6a2b'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="engine.js" defer></script>
+  <script src="simulation.js" defer></script>
 </head>
 <body>
-
-
-
-<div id="simulationContainer">
-    <canvas id="simulationCanvas" width="800" height="600"></canvas>
-
-    <div id="controls">
-        <div id="entityInputs">
-            <label>
-                Rocks:
-                <input type="number" id="rockCount" value="10" min="0">
-            </label>
-            <label>
-                Papers:
-                <input type="number" id="paperCount" value="10" min="0">
-            </label>
-            <label>
-                Scissors:
-                <input type="number" id="scissorsCount" value="10" min="0">
-            </label>
-            <label>
-                Lizards:
-                <input type="number" id="lizardCount" value="10" min="0">
-            </label>
-            <label>
-                Spocks:
-                <input type="number" id="spockCount" value="10" min="0">
-            </label>
-
+  <main class="workshop">
+    <header class="masthead">
+      <div class="brand"><a href="../index.html" aria-label="Back to the forge" class="forge-mark">◇</a><div><h1 id="title">Five Clans<span>.</span></h1><p>Rock. Paper. Scissors. A little chaos.</p></div></div>
+      <nav class="header-actions" aria-label="Experiment panels"><button data-drawer="settingsDrawer" aria-haspopup="dialog">Settings</button><button data-drawer="statsDrawer" aria-haspopup="dialog">Statistics</button><button data-drawer="rulesDrawer" aria-haspopup="dialog">How it works <span>?</span></button></nav>
+    </header>
+    <div class="lab-layout">
+      <dialog id="settingsDrawer" class="drawer" aria-labelledby="settingsTitle">
+        <div class="drawer-heading"><div><p class="eyebrow">MAKE IT YOUR OWN</p><h2 id="settingsTitle">The conditions</h2></div><button class="drawer-close" aria-label="Close settings">×</button></div>
+      <aside class="panel setup" aria-label="Experiment controls">
+        <div class="panel-heading"><h2><span class="section-no">01</span> THE CONDITIONS</h2><span class="small-stamp">INPUT</span></div>
+        <div class="setup-content">
+          <label class="field-title" for="preset">Starting formation</label>
+          <select id="preset"><option value="kingdoms">Five kingdoms</option><option value="scatter">Primordial soup</option><option value="siege">The last rock</option><option value="vortex">Eye of the storm</option></select>
+          <p id="presetHint" class="field-note">Five territories. A fragile peace at the borders.</p>
+          <div class="control-divider"></div>
+          <label class="field-title" for="ruleSet">The clans</label>
+          <select id="ruleSet"><option value="5">Five · Lizard & Spock</option><option value="3">Classic · Rock, Paper, Scissors</option></select>
+          <label class="field-title">On contact</label>
+          <div class="segmented" role="group" aria-label="Collision outcome"><button id="convertBtn" aria-pressed="true">Convert</button><button id="eliminateBtn" aria-pressed="false">Eliminate</button></div>
+          <p id="modeHint" class="field-note">The defeated joins the victor’s clan.</p>
+          <label class="range-label" for="population"><span>Starting population</span><output id="populationValue">150</output></label><input id="population" type="range" min="25" max="600" step="5" value="150">
+          <label class="range-label" for="speed"><span>Time multiplier</span><output id="speedValue">1×</output></label><input id="speed" type="range" min="0.25" max="3" step="0.25" value="1">
+          <label class="check-label"><input id="hunting" type="checkbox" checked><span>Hunt prey & evade predators</span></label>
+          <label class="check-label"><input id="trails" type="checkbox"><span>Leave a motion trail</span></label>
+          <details class="advanced"><summary>Fine-tune the experiment <span>+</span></summary>
+            <label class="field-title" for="seed">World seed</label><div class="seed-row"><input id="seed" type="text" value="FORGE-005" maxlength="40" spellcheck="false"><button id="randomSeed" aria-label="Generate a new world seed">↻</button></div>
+            <label class="field-title" for="duration">Time limit · simulation seconds</label><select id="duration"><option value="0">Until one clan remains</option><option value="60">60 seconds</option><option value="180">180 seconds</option><option value="300">300 seconds</option></select>
+            <p class="field-note">Same seed + conditions = same opening. Formation, clans, population and contact rules apply when you reforge.</p>
+          </details>
+          <p id="settingsNote" class="field-note settings-note">World settings apply on Reforge. Speed and behavior update live.</p>
+          <button id="resetBtn" class="primary">REFORGE THE ARENA <span>↻</span></button>
+          <div class="utility-actions"><button id="soundBtn" aria-pressed="false">Sound off</button><button id="shareBtn">Copy experiment link ↗</button><button id="stepBtn" title="Pause and advance one simulation tick">Advance one tick ▸│</button></div>
         </div>
-        <div id="durationInput">
-            <label>
-                Match Duration (seconds):
-                <input type="number" id="matchDuration" value="10" min="1">
-            </label>
+      </aside>
+      </dialog>
+      <section class="arena-column" aria-label="Live simulation">
+        <div class="arena-frame" id="arenaFrame">
+          <div class="arena-top"><div><span id="statusLight" class="status-light"></span><span id="statusText">LIVE EXPERIMENT</span></div><span id="worldLabel">WORLD / FORGE-005</span><button id="fullscreenBtn" aria-label="Toggle arena fullscreen" title="Fullscreen arena">⛶</button></div>
+          <div class="canvas-wrap"><canvas id="simulationCanvas" width="1100" height="720" tabindex="0" aria-label="Five clans arena. Choose a clan below, then click or drag to add reinforcements. Space pauses. R restarts."></canvas>
+            <div id="result" class="result" hidden><p class="eyebrow">THE DUST SETTLES</p><h2 id="resultTitle"></h2><p id="resultNote"></p><button id="againBtn">Reforge again ↻</button><p class="result-foot">Or add a rival below to challenge the throne.</p></div>
+          </div>
+          <div class="arena-bottom"><span id="toolHint">Choose a shape below to add more.</span><span id="capacity">150 / 700</span></div>
         </div>
-        <div>
-            <button id="startBtn">Start</button>
-            <button id="pauseBtn">Pause</button>
-            <button id="resetBtn">Reset</button>
-        </div>
-        <div id="stats">
-            <!-- Entity counts and probabilities will be displayed here -->
-            <p>Rocks: <span id="rockCountDisplay">0</span> (<span id="rockPercentage">0</span>%)</p>
-            <p>Papers: <span id="paperCountDisplay">0</span> (<span id="paperPercentage">0</span>%)</p>
-            <p>Scissors: <span id="scissorsCountDisplay">0</span> (<span id="scissorsPercentage">0</span>%)</p>
-            <p>Lizards</p> <span id="lizardCountDisplay">0</span> (<span id="lizardPercentage">0</span>%)
-            <p>Spocks</p> <span id="spockCountDisplay">0</span> (<span id="spockPercentage">0</span>%)
-        </div>
-        <div id="winner">
-            <!-- Winner will be displayed here -->
-        </div>
+        <div class="arena-dock"><div class="transport"><button id="pauseBtn" class="play-button" aria-label="Pause simulation">Ⅱ</button><button id="quickReset" title="Restart with current settings" aria-label="Restart simulation">↻</button><span id="elapsed">00:00.0</span></div><div class="intervention"><div id="brushes" class="brushes" role="group" aria-label="Reinforcement clan"></div><button id="observeBtn" class="observe" aria-pressed="true">Observe</button></div><button id="disturbBtn" title="Push agents away from the center">Stir things up <span>↯</span></button></div>
+      </section>
+      <dialog id="statsDrawer" class="drawer" aria-labelledby="statsTitle">
+        <div class="drawer-heading"><div><p class="eyebrow">BEHIND THE CHAOS</p><h2 id="statsTitle">The numbers</h2></div><button class="drawer-close" aria-label="Close statistics">×</button></div>
+      <aside class="ledger" aria-label="Live experiment data"><section class="panel census"><div class="panel-heading"><h2><span class="section-no">02</span> THE CENSUS</h2><span class="small-stamp">LIVE</span></div><div class="metrics"><div><strong id="alive">250</strong><span>IN THE ARENA</span></div><div><strong id="conversions">0</strong><span id="contactLabel">CONVERSIONS</span></div></div><div id="clanList" class="clan-list"></div><div class="diversity"><div><span>Coexistence</span><strong id="diversityValue">100%</strong></div><div class="meter"><span id="diversityBar"></span></div><p>Even populations → 100%. One clan → 0%.</p></div></section>
+        <section class="panel chronicle"><div class="panel-heading"><h2><span class="section-no">04</span> FIELD NOTES</h2><span class="record-dot"></span></div><ol id="events" class="events" aria-label="Recent experiment milestones"></ol></section>
+        <div class="ledger-note"><span>✧</span><p>Power moves in circles.<br>Dominance is a moment,<br>not a guarantee.</p></div>
+      </aside>
+        <section class="panel history-panel" aria-labelledby="historyTitle"><div class="panel-heading"><h2 id="historyTitle">Population history</h2><button id="exportBtn" class="text-button">Export CSV ↓</button></div><div class="chart-wrap"><canvas id="historyCanvas" aria-label="Population share over simulation time. Current shares are listed in the clan census."></canvas><span id="chartEmpty">A history written by collisions.</span></div><div class="chart-footer"><span>POPULATION SHARE · %</span><span>LAST 120 SIMULATION SECONDS</span></div></section>
+      </dialog>
     </div>
-</div>
-
-<script src="simulation.js"></script>
-    <script src="../forge/lab-frame.js" data-id="rps" defer></script>
+    <dialog id="rulesDrawer" class="drawer" aria-labelledby="lawsTitle"><div class="drawer-heading"><div><p class="eyebrow">A SIMPLE IDEA</p><h2>Everyone has a rival.</h2></div><button class="drawer-close" aria-label="Close rules">×</button></div>
+    <section class="laws panel" aria-labelledby="lawsTitle"><div class="laws-copy"><p class="eyebrow">THE LOGIC BENEATH THE CHAOS</p><h2 id="lawsTitle">NO ONE BEATS<br>EVERYONE.</h2><p>Each clan defeats two and falls to two. A perfect loop of advantages. Click a clan to trace its place in the food chain.</p><p class="field-note" id="lawsDescription">In classic mode, each defeats one and loses to one.</p><button id="clearLaw" class="text-button">Show every connection ↗</button></div><div class="rule-map"><svg id="ruleMap" viewBox="0 0 500 340" role="img" aria-label="Interactive clan relationships. Arrows point from victor to defeated."></svg></div><div class="law-detail"><span class="small-stamp" id="lawCount">THE TEN LAWS</span><ul id="lawList"></ul><p>Arrows point from victor to defeated.</p></div></section>
+    <p class="drawer-help">Choose a shape in the bottom bar, then click or drag in the arena to add it. Space pauses, R restarts. When shapes meet, the winner converts its rival. Change the rules in Settings.</p><p class="asset-credit">Shape artwork by <a href="https://github.com/jdecked/twemoji" target="_blank" rel="noopener">Twemoji</a>, licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>.</p></dialog>
+    <footer class="footer"><span>EVERY HUNTER IS SOMEONE ELSE’S PREY.</span><span>Made in the forge.</span></footer>
+    <div id="toast" role="status" aria-live="polite" class="toast"></div>
+    <span id="announcement" class="sr-only" role="status" aria-live="polite"></span>
+  </main>
+  <script src="../forge/lab-frame.js" data-id="rps" defer></script>
 </body>
 </html>
